@@ -5,10 +5,12 @@
 
 void setup_ft_printf(void)
 {
+  free_write_buf();
 }
 
 void teardown_ft_printf(void)
 {
+  free_write_buf();
 }
 
 START_TEST(test_single_format_param)
@@ -18,7 +20,6 @@ START_TEST(test_single_format_param)
 	result = ft_printf("Hello");
 	ck_assert_int_eq(result, 5);
 	ck_assert_pstr_eq(get_write_buf(), "Hello");
-	free_write_buf();
 }
 END_TEST
 
@@ -30,7 +31,6 @@ START_TEST(test_single_format_param_null)
 	result = ft_printf(NULL);
 	ck_assert_int_eq(result, -1);
 	ck_assert_pstr_eq(get_write_buf(), NULL);
-	free_write_buf();
 }
 END_TEST
 
