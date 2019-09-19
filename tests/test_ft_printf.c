@@ -22,6 +22,18 @@ START_TEST(test_single_format_param)
 }
 END_TEST
 
+START_TEST(test_single_format_param_null)
+{
+	int result;
+
+	free_write_buf();
+	result = ft_printf(NULL);
+	ck_assert_int_eq(result, -1);
+	ck_assert_pstr_eq(get_write_buf(), NULL);
+	free_write_buf();
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
 	Suite *s;
@@ -31,7 +43,8 @@ Suite *ft_printf_suite(void)
 	tc_single_format_param = tcase_create("Single format param");
 	tcase_add_checked_fixture(tc_single_format_param, setup_ft_printf, teardown_ft_printf);
 	tcase_add_test(tc_single_format_param, test_single_format_param);
-
+	tcase_add_test(tc_single_format_param, test_single_format_param_null);
+	
 	suite_add_tcase(s, tc_single_format_param);
 
 	return s;
