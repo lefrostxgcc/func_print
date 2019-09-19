@@ -34,6 +34,17 @@ START_TEST(test_single_format_param_null)
 }
 END_TEST
 
+START_TEST(test_single_format_param_empty)
+{
+	int result;
+
+	free_write_buf();
+	result = ft_printf("");
+	ck_assert_int_eq(result, 0);
+	ck_assert_pstr_eq(get_write_buf(), NULL);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
 	Suite *s;
@@ -44,6 +55,7 @@ Suite *ft_printf_suite(void)
 	tcase_add_checked_fixture(tc_single_format_param, setup_ft_printf, teardown_ft_printf);
 	tcase_add_test(tc_single_format_param, test_single_format_param);
 	tcase_add_test(tc_single_format_param, test_single_format_param_null);
+	tcase_add_test(tc_single_format_param, test_single_format_param_empty);
 	
 	suite_add_tcase(s, tc_single_format_param);
 

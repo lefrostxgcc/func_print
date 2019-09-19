@@ -2,9 +2,10 @@
 
 int	ft_printf(const char *format, ...)
 {
-  (void) format;
   if (!format)
     return -1;
+  else if (*format == '\0')
+    return 0;
   const char *p = format;
   while (*p != '\0')
     p++;
