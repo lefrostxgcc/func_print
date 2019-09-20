@@ -2,8 +2,8 @@ AR = ar
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
-HEADERS := ft_printf.h libft/libft.h tests/rz_write.h
-FILES := ft_printf.c
+HEADERS := ft_printf.h libft/libft.h rz_numtostr.h tests/rz_write.h
+FILES := ft_printf.c rz_ltoa.c
 
 OBJS = $(FILES:.c=.o)
 
