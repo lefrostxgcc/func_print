@@ -93,6 +93,14 @@ int ft_printf(const char *format, ...)
 	      free(p);
 	      return result;
 	    }
+	  else if (format[2] == 'u')
+	    {
+	      unsigned long a = va_arg(ap, unsigned long);
+	      char *p = rz_ultoa(a);
+	      int result = rz_write(0, p, ft_strlen(p));
+	      free(p);
+	      return result;
+	    }
 	}
     }
   va_end(ap);
