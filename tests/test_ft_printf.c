@@ -27,7 +27,6 @@ START_TEST(test_single_format_param_null)
 {
 	int result;
 
-	free_write_buf();
 	result = ft_printf(NULL);
 	ck_assert_int_eq(result, -1);
 	ck_assert_pstr_eq(get_write_buf(), NULL);
@@ -38,7 +37,6 @@ START_TEST(test_single_format_param_empty)
 {
 	int result;
 
-	free_write_buf();
 	result = ft_printf("");
 	ck_assert_int_eq(result, 0);
 	ck_assert_pstr_eq(get_write_buf(), NULL);
