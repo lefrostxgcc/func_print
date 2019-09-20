@@ -2,26 +2,33 @@ AR = ar
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
-HEADERS := ft_printf.h tests/rz_write.h
-FILES := ft_printf.c tests/rz_write.c
+HEADERS := ft_printf.h libft/libft.h tests/rz_write.h
+FILES := ft_printf.c
 
 OBJS = $(FILES:.c=.o)
 
 TARGET = libftprintf.a
 
-.PHONY: all clean fclean re
+LIBFT := libft/libft.a
+
+.PHONY: all clean fclean re force
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(AR) rcs $@ $^
+$(TARGET): $(OBJS) $(LIBFT)
+	$(AR) rcsT $@ $^
 
 $(OBJS) : $(FILES) $(HEADERS)
 
+$(LIBFT): force
+	$(MAKE) -C libft
+
 clean:
-	rm -rf $(FILES:.c=.o) 
+	rm -rf $(OBJS)
+	$(MAKE) -C libft clean
 
 fclean: clean
 	rm -f $(TARGET)
+	$(MAKE) -C libft fclean
 
 re: fclean all

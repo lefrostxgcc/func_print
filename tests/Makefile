@@ -7,8 +7,8 @@ LDADD := `pkg-config --libs check`
 
 OBJS = $(SRCS:.c=.o)
 
-TARGET = test_ft_printf
-LIBFTPRINTF = ../libftprintf.a
+TARGET := test_ft_printf
+LIBFTPRINTF := ../libftprintf.a
 
 .PHONY: all clean fclean re force
 
@@ -31,5 +31,6 @@ clean:
 
 fclean: clean
 	-rm -f $(TARGET)
+	$(MAKE) -C .. fclean
 
 re: fclean all
