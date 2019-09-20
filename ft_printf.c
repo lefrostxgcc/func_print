@@ -74,6 +74,14 @@ int ft_printf(const char *format, ...)
 	      free(p);
 	      return result;
 	    }
+	  else if (format[2] == 'u')
+	    {
+	      unsigned int a = va_arg(ap, unsigned int);
+	      char *p = rz_ultoa((unsigned short)a);
+	      int result = rz_write(0, p, ft_strlen(p));
+	      free(p);
+	      return result;
+	    }
 	}
     }
   va_end(ap);
