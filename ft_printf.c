@@ -83,6 +83,17 @@ int ft_printf(const char *format, ...)
 	      return result;
 	    }
 	}
+      else if (format[1] == 'l')
+	{
+	  if (format[2] == 'd')
+	    {
+	      long a = va_arg(ap, long);
+	      char *p = rz_ltoa(a);
+	      int result = rz_write(0, p, ft_strlen(p));
+	      free(p);
+	      return result;
+	    }
+	}
     }
   va_end(ap);
   return rz_write(0, format, ft_strlen(format));
