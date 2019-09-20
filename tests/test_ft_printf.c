@@ -1,5 +1,6 @@
 #include <check.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "../ft_printf.h"
 #include "rz_write.h"
 
@@ -83,6 +84,17 @@ START_TEST(test_single_format_param_percent)
 }
 END_TEST
 
+START_TEST(test_single_param_d)
+{
+  char buffer[64];
+  int a = 12345;
+  int actual_result = ft_printf("%d", a);
+  int expected_result = snprintf(buffer, sizeof buffer, "%d", a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -102,6 +114,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_char);
   tcase_add_test(tc_single_param, test_single_param_cstring);
   tcase_add_test(tc_single_param, test_single_param_cstring_empty);
+  tcase_add_test(tc_single_param, test_single_param_d);
 	
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
