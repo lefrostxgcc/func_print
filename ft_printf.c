@@ -20,6 +20,8 @@ int ft_printf(const char *format, ...)
       else
 	{
 	  const char *p = va_arg(ap, const char *);
+	  if (*p == '\0')
+	      return 0;
 	  return rz_write(0, p, ft_strlen(p));
 	}
     }
