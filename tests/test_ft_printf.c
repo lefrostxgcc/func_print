@@ -271,6 +271,17 @@ START_TEST(test_single_param_lld)
 }
 END_TEST
 
+START_TEST(test_single_param_lli)
+{
+  char buffer[128];
+  long a = 5679000000000;
+  int actual_result = ft_printf("%lli", a);
+  int expected_result = snprintf(buffer, sizeof buffer, "%lli", a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -313,6 +324,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_lu);
 
   tcase_add_test(tc_single_param, test_single_param_lld);
+  tcase_add_test(tc_single_param, test_single_param_lli);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
