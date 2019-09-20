@@ -10,9 +10,19 @@ int ft_printf(const char *format, ...)
     return 0;
   va_list ap;
   va_start(ap, format);
-  char ch = va_arg(ap, int);
+  if (format[0] == '%')
+    {
+      if (format[1] == 'c')
+	{
+	  char ch = va_arg(ap, int);
+	  return rz_write(0, &ch, 1);
+	}
+      else
+	{
+	  const char *p = va_arg(ap, const char *);
+	  return rz_write(0, p, ft_strlen(p));
+	}
+    }
   va_end(ap);
-  if (ch == 'a')
-    return rz_write(0, &ch, 1);
   return rz_write(0, format, ft_strlen(format));
 }
