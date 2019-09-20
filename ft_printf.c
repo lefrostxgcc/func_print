@@ -49,7 +49,7 @@ int ft_printf(const char *format, ...)
 	{
 	  if (format[2] == 'h')
 	    {
-	      if (format[3] == 'd')
+	      if (format[3] == 'd' || format[3] == 'i')
 		{
 		  int a = va_arg(ap, int);
 		  char *p = rz_ltoa((char)a);
