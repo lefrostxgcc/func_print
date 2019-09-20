@@ -28,7 +28,7 @@ int ft_printf(const char *format, ...)
 	{
 	  return rz_write(0, "%", 1);
 	}
-      else if (format[1] == 'd')
+      else if (format[1] == 'd' || format[1] == 'i')
 	{
 	  int a = va_arg(ap, int);
 	  char *p = ft_itoa(a);
