@@ -66,6 +66,14 @@ int ft_printf(const char *format, ...)
 		  return result;
 		}
 	    }
+	  else if (format[2] == 'd')
+	    {
+	      int a = va_arg(ap, int);
+	      char *p = rz_ltoa((short)a);
+	      int result = rz_write(0, p, ft_strlen(p));
+	      free(p);
+	      return result;
+	    }
 	}
     }
   va_end(ap);
