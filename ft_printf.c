@@ -66,7 +66,7 @@ int ft_printf(const char *format, ...)
 		  return result;
 		}
 	    }
-	  else if (format[2] == 'd')
+	  else if (format[2] == 'd' || format[2] == 'i')
 	    {
 	      int a = va_arg(ap, int);
 	      char *p = rz_ltoa((short)a);
