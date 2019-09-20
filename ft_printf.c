@@ -17,12 +17,16 @@ int ft_printf(const char *format, ...)
 	  char ch = va_arg(ap, int);
 	  return rz_write(0, &ch, 1);
 	}
-      else
+      else if (format[1] == 's')
 	{
 	  const char *p = va_arg(ap, const char *);
 	  if (*p == '\0')
 	      return 0;
 	  return rz_write(0, p, ft_strlen(p));
+	}
+      else if (format[1] == '%')
+	{
+	  return rz_write(0, "%", 1);
 	}
     }
   va_end(ap);

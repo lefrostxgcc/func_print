@@ -73,6 +73,16 @@ START_TEST(test_single_param_cstring_empty)
 }
 END_TEST
 
+START_TEST(test_single_format_param_percent)
+{
+  int result;
+
+  result = ft_printf("%%");
+  ck_assert_int_eq(result, 1);
+  ck_assert_pstr_eq(get_write_buf(), "%");
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -85,6 +95,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_format_param, test_single_format_param);
   tcase_add_test(tc_single_format_param, test_single_format_param_null);
   tcase_add_test(tc_single_format_param, test_single_format_param_empty);
+  tcase_add_test(tc_single_format_param, test_single_format_param_percent);
 
   tc_single_param = tcase_create("Single param");
   tcase_add_checked_fixture(tc_single_param, setup_ft_printf, teardown_ft_printf);
