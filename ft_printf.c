@@ -85,7 +85,7 @@ int ft_printf(const char *format, ...)
 	}
       else if (format[1] == 'l')
 	{
-	  if (format[2] == 'd')
+	  if (format[2] == 'd' || format[2] == 'i')
 	    {
 	      long a = va_arg(ap, long);
 	      char *p = rz_ltoa(a);
