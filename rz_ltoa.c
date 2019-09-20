@@ -2,7 +2,7 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
-static int count(int n)
+static int count(long n)
 {
   int i;
 
