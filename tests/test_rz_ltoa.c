@@ -8,7 +8,7 @@ START_TEST(test_min_long)
   char expected[128];
   long a = (long) 9223372036854775808UL;
   char *actual = rz_ltoa(a);
-  snprintf(expected, sizeof expected, "%lld", a);
+  snprintf(expected, sizeof expected, "%ld", a);
   ck_assert_pstr_eq(actual, expected);
   free(actual);
 }
@@ -19,7 +19,18 @@ START_TEST(test_max_long)
   char expected[128];
   long a = (long) 9223372036854775807UL;
   char *actual = rz_ltoa(a);
-  snprintf(expected, sizeof expected, "%lld", a);
+  snprintf(expected, sizeof expected, "%ld", a);
+  ck_assert_pstr_eq(actual, expected);
+  free(actual);
+}
+END_TEST
+
+START_TEST(test_min_int)
+{
+  char expected[128];
+  long a = -2147483648;
+  char *actual = rz_ltoa(a);
+  snprintf(expected, sizeof expected, "%ld", a);
   ck_assert_pstr_eq(actual, expected);
   free(actual);
 }
@@ -34,6 +45,7 @@ Suite *rz_ltoa_suite(void)
   tc = tcase_create("rz_ltoa");
   tcase_add_test(tc, test_min_long);
   tcase_add_test(tc, test_max_long);
+  tcase_add_test(tc, test_min_int);
 	
   suite_add_tcase(s, tc);
 
