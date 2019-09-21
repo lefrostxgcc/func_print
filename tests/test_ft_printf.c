@@ -427,6 +427,18 @@ START_TEST(test_single_param_hhX)
 }
 END_TEST
 
+START_TEST(test_single_param_hX)
+{
+  char buffer[128];
+  const char *format = "%hX";
+  long a = 0x13e;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -486,6 +498,7 @@ Suite *ft_printf_suite(void)
 
   tcase_add_test(tc_single_param, test_single_param_X);
   tcase_add_test(tc_single_param, test_single_param_hhX);
+  tcase_add_test(tc_single_param, test_single_param_hX);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
