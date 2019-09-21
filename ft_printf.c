@@ -106,6 +106,14 @@ int ft_printf(const char *format, ...)
 	      free(p);
 	      return result;
 	    }
+	  else if (format[2] == 'x')
+	    {
+	      unsigned int a = va_arg(ap, unsigned int);
+	      char *p = rz_xtoa((unsigned short)a);
+	      int result = rz_write(0, p, ft_strlen(p));
+	      free(p);
+	      return result;
+	    }
 	}
       else if (format[1] == 'l')
 	{
