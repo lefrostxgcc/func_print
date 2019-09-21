@@ -16,71 +16,78 @@ void teardown_ft_printf(void)
 
 START_TEST(test_single_format_param)
 {
-  int result;
-
-  result = ft_printf("Hello");
-  ck_assert_int_eq(result, 5);
-  ck_assert_pstr_eq(get_write_buf(), "Hello");
+  char buffer[128];
+  const char *format = "Hello";
+  int actual_result = ft_printf(format);
+  int expected_result = snprintf(buffer, sizeof buffer, format);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
 }
 END_TEST
 
 START_TEST(test_single_format_param_null)
 {
-  int result;
-
-  result = ft_printf(NULL);
-  ck_assert_int_eq(result, -1);
+  char buffer[128] = "abcde";
+  const char *format = NULL;
+  int actual_result = ft_printf(format);
+  ck_assert_int_eq(actual_result, -1);
   ck_assert_pstr_eq(get_write_buf(), NULL);
 }
 END_TEST
 
 START_TEST(test_single_format_param_empty)
 {
-  int result;
-
-  result = ft_printf("");
-  ck_assert_int_eq(result, 0);
+  char buffer[128] = "12345";
+  const char *format = "";
+  int actual_result = ft_printf(format);
+  ck_assert_int_eq(actual_result, 0);
   ck_assert_pstr_eq(get_write_buf(), NULL);
 }
 END_TEST
 
 START_TEST(test_single_param_char)
 {
-  int result;
-
-  result = ft_printf("%c", 'a');
-  ck_assert_int_eq(result, 1);
-  ck_assert_pstr_eq(get_write_buf(), "a");
+  char buffer[128];
+  const char *format = "%c";
+  int a = 'a';
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
 }
 END_TEST
 
 START_TEST(test_single_param_cstring)
 {
-  int result;
-
-  result = ft_printf("%s", "C string");
-  ck_assert_int_eq(result, 8);
-  ck_assert_pstr_eq(get_write_buf(), "C string");
+  char buffer[128];
+  const char *format = "%s";
+  const char *a = "C string";
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
 }
 END_TEST
 
 START_TEST(test_single_param_cstring_empty)
 {
-  int result;
-
-  result = ft_printf("%s", "");
-  ck_assert_int_eq(result, 0);
+  char buffer[128];
+  const char *format = "%s";
+  const char *a = "";
+  int actual_result = ft_printf(format, a);
+  ck_assert_int_eq(actual_result, 0);
   ck_assert_pstr_eq(get_write_buf(), NULL);
 }
 END_TEST
 
 START_TEST(test_single_format_param_percent)
 {
-  int result;
-
-  result = ft_printf("%%");
-  ck_assert_int_eq(result, 1);
-  ck_assert_pstr_eq(get_write_buf(), "%");
+  char buffer[128];
+  const char *format = "%%";
+  int actual_result = ft_printf(format);
+  int expected_result = snprintf(buffer, sizeof buffer, format);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
 }
 END_TEST
 
@@ -548,10 +555,10 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_min_int);
   tcase_add_test(tc_single_param, test_single_param_max_int);
   tcase_add_test(tc_single_param, test_single_param_zero);
-
+  
   tcase_add_test(tc_single_param, test_single_param_min_uint);
   tcase_add_test(tc_single_param, test_single_param_max_uint);
-
+  
   tcase_add_test(tc_single_param, test_single_param_hhd);
   tcase_add_test(tc_single_param, test_single_param_hhi);
   tcase_add_test(tc_single_param, test_single_param_hhu);
@@ -563,17 +570,17 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_ld);
   tcase_add_test(tc_single_param, test_single_param_li);
   tcase_add_test(tc_single_param, test_single_param_lu);
-
+  
   tcase_add_test(tc_single_param, test_single_param_lld);
   tcase_add_test(tc_single_param, test_single_param_lli);
   tcase_add_test(tc_single_param, test_single_param_llu);
-
+  
   tcase_add_test(tc_single_param, test_single_param_o);
   tcase_add_test(tc_single_param, test_single_param_hho);
   tcase_add_test(tc_single_param, test_single_param_ho);
   tcase_add_test(tc_single_param, test_single_param_lo);
   tcase_add_test(tc_single_param, test_single_param_llo);
-
+   
   tcase_add_test(tc_single_param, test_single_param_x);
   tcase_add_test(tc_single_param, test_single_param_hhx);
   tcase_add_test(tc_single_param, test_single_param_hx);
@@ -585,12 +592,8 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_hX);
   tcase_add_test(tc_single_param, test_single_param_lX);
   tcase_add_test(tc_single_param, test_single_param_llX);
-
+  
   tcase_add_test(tc_single_param, test_single_param_p);
-  tcase_add_test(tc_single_param, test_single_param_hhp);
-  tcase_add_test(tc_single_param, test_single_param_hp);
-  tcase_add_test(tc_single_param, test_single_param_lp);
-  tcase_add_test(tc_single_param, test_single_param_llp);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
