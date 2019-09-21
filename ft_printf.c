@@ -135,6 +135,14 @@ int ft_printf(const char *format, ...)
 		  free(p);
 		  return result;
 		}
+	      else if (format[3] == 'o')
+		{
+		  unsigned long a = va_arg(ap, unsigned long);
+		  char *p = rz_otoa(a);
+		  int result = rz_write(0, p, ft_strlen(p));
+		  free(p);
+		  return result;
+		}
 	    }
 	  else if (format[2] == 'o')
 	    {
