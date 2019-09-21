@@ -392,6 +392,17 @@ START_TEST(test_single_param_lx)
 }
 END_TEST
 
+START_TEST(test_single_param_llx)
+{
+  char buffer[128];
+  long a = -(1UL << 10) + (1UL << 38);
+  int actual_result = ft_printf("%llx", a);
+  int expected_result = snprintf(buffer, sizeof buffer, "%llx", a);
+  ck_assert_int_eq(actual_result, expected_result);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -447,6 +458,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_single_param, test_single_param_hhx);
   tcase_add_test(tc_single_param, test_single_param_hx);
   tcase_add_test(tc_single_param, test_single_param_lx);
+  tcase_add_test(tc_single_param, test_single_param_llx);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
