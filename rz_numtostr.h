@@ -3,5 +3,6 @@
 
 char *rz_ltoa(long number);
 char *rz_ultoa(unsigned long number);
+char *rz_otoa(unsigned long number);
 
 #endif
