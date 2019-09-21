@@ -241,6 +241,14 @@ int ft_printf(const char *format, ...)
 	  free(p);
 	  return result;
 	}
+      else if (format[1] == 'p')
+	{
+	  unsigned long a = va_arg(ap, unsigned long);
+	  char *p = rz_ptoa(a);
+	  int result = rz_write(0, p, ft_strlen(p));
+	  free(p);
+	  return result;
+	}
     }
   va_end(ap);
   return rz_write(0, format, ft_strlen(format));

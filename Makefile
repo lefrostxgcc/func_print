@@ -3,7 +3,8 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 HEADERS := ft_printf.h libft/libft.h rz_numtostr.h tests/rz_write.h
-FILES := ft_printf.c rz_ltoa.c rz_ultoa.c rz_otoa.c rz_xtoa.c rz_Xtoa.c
+FILES := ft_printf.c rz_ltoa.c rz_ultoa.c rz_otoa.c rz_xtoa.c rz_Xtoa.c \
+rz_ptoa.c
 
 OBJS = $(FILES:.c=.o)
 
