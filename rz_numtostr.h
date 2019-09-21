@@ -5,5 +5,6 @@ char *rz_ltoa(long number);
 char *rz_ultoa(unsigned long number);
 char *rz_otoa(unsigned long number);
 char *rz_xtoa(unsigned long number);
+char *rz_Xtoa(unsigned long number);
 
 #endif

@@ -201,6 +201,14 @@ int ft_printf(const char *format, ...)
 	  free(p);
 	  return result;
 	}
+      else if (format[1] == 'X')
+	{
+	  unsigned int a = va_arg(ap, unsigned int);
+	  char *p = rz_Xtoa(a);
+	  int result = rz_write(0, p, ft_strlen(p));
+	  free(p);
+	  return result;
+	}
     }
   va_end(ap);
   return rz_write(0, format, ft_strlen(format));
