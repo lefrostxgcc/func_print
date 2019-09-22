@@ -3,240 +3,147 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
-enum {va_i, va_u, va_l, va_ul, va_cs, va_percent};
-
-static int parse_va_arg_type(const char *p)
+enum va_conv_type {va_i, va_u, va_l, va_ul, va_c, va_cs};
+enum arg_len_type {orig, flag_hh, flag_h, flag_l, flag_ll};
+enum int_num_type {flag_dec, flag_oct, flag_hex, flag_Hex, flag_p};
+struct arg_info
 {
-  if (*p == 'd' || *p == 'i')
+  enum va_conv_type va_conv;
+  enum arg_len_type arg_len;
+  enum int_num_type int_num;
+  int fmt_len;
+};
+
+static enum va_conv_type parse_va_conv_type(const char *p, enum arg_len_type len)
+{
+  if (len == flag_hh || len == flag_h)
+    return (*p == 'd' || *p == 'i') ? va_i : va_u;
+  else if (len == flag_l || len == flag_ll)
+    return (*p == 'd' || *p == 'i') ? va_l : va_ul;
+  else if (*p == 'd' || *p == 'i')
     return va_i;
-  else if (*p == 'u' || *p == 'c' || *p == 'o' || *p == 'x' || *p == 'X')
+  else if (*p == 'u' || *p == 'o' || *p == 'x' || *p == 'X')
     return va_u;
-  else if ((*p == 'h' && (p[1] == 'd' || p[1] == 'i')) ||
-	   (*p == 'h' && p[1] == 'h' && (p[2] == 'd' || p[2] == 'i')))
-    return va_i;
-  else if ((*p == 'l' && (p[1] == 'd' || p[1] == 'i')) ||
-	   (*p == 'l' && p[1] == 'l' && (p[2] == 'd' || p[2] == 'i')))
-    return va_l;
-  else if ((*p == 'h' && p[1] == 'u') ||
-	   (*p == 'h' && p[1] == 'h' && p[2] == 'u'))
-    return va_u;
-  else if ((*p == 'h' && p[1] == 'o') ||
-	   (*p == 'h' && p[1] == 'h' && p[2] == 'o'))
-    return va_u;
-  else if ((*p == 'h' && p[1] == 'x') ||
-	   (*p == 'h' && p[1] == 'h' && p[2] == 'x'))
-    return va_u;
-  else if ((*p == 'h' && p[1] == 'X') ||
-	   (*p == 'h' && p[1] == 'h' && p[2] == 'X'))
-    return va_u;
-  else if ((*p == 'l' && p[1] == 'u') ||
-	   (*p == 'l' && p[1] == 'l' && p[2] == 'u'))
-    return va_ul;
-  else if ((*p == 'l' && p[1] == 'o') ||
-	   (*p == 'l' && p[1] == 'l' && p[2] == 'o'))
-    return va_ul;
-  else if ((*p == 'l' && p[1] == 'x') ||
-	   (*p == 'l' && p[1] == 'l' && p[2] == 'x'))
-    return va_ul;
-  else if ((*p == 'l' && p[1] == 'X') ||
-	   (*p == 'l' && p[1] == 'l' && p[2] == 'X'))
-    return va_ul;
-  else if (*p == 'p')
-    return va_ul;
   else if (*p == 's')
     return va_cs;
-  else if (*p == '%')
-    return va_percent;
+  else if (*p == 'p')
+    return va_ul;
+  else if (*p == 'c')
+    return va_c;
   return va_i;
 }
 
-static int print_int_arg(const char **f, int arg)
+static enum int_num_type parse_arg_len_type(const char **s)
 {
   const char *p;
+  enum arg_len_type t;
+
+  t = orig;
+  p = *s;
+  if (*p == 'h')
+    t = p[1] == 'h' ? flag_hh : flag_h;
+  else if (*p == 'l')
+    t = p[1] == 'l' ? flag_ll : flag_l;
+  if (t == flag_h || t == flag_l)
+    (*s)++;
+  else if (t == flag_hh || t == flag_ll)
+    (*s) += 2;
+  return t;
+}
+
+static enum int_num_type parse_int_num_type(const char *s)
+{
+  if (*s == 'o')
+    return flag_oct;
+  else if (*s == 'x')
+    return flag_hex;
+  else if (*s == 'X')
+    return flag_Hex;
+  else if (*s == 'p')
+    return flag_p;
+  else
+    return flag_dec;
+}
+
+static int print_long_arg(struct arg_info *info, long arg)
+{
   char *s;
   int result;
 
-  p = *f;
-  if (*p == 'd' || *p == 'i')
+  if (info->arg_len == flag_hh)
+    s = rz_ltoa((signed char)arg);
+  else if (info->arg_len == flag_h)
+    s = rz_ltoa((short)arg);
+  else
+    s = rz_ltoa(arg);
+  result = rz_write(0, s, ft_strlen(s));
+  free(s);
+  return result;
+}
+
+static int print_ulong_arg(struct arg_info *info, unsigned long arg)
+{
+  char *s;
+  int result;
+
+  if (info->arg_len == flag_hh)
     {
-      s = rz_ltoa(arg);
-      (*f)++;
+      if (info->int_num == flag_oct)
+	s = rz_otoa((unsigned char)arg);
+      else if (info->int_num == flag_hex)
+	s = rz_xtoa((unsigned char)arg);
+      else if (info->int_num == flag_Hex)
+	s = rz_Xtoa((unsigned char)arg);
+      else
+	s = rz_ultoa((unsigned char)arg);
     }
-  else if (*p == 'h' && (p[1] == 'd' || p[1] == 'i'))
+  else if (info->arg_len == flag_h)
     {
-      s = rz_ltoa((short)arg);
-      (*f) += 2;
+      if (info->int_num == flag_oct)
+	s = rz_otoa((unsigned short)arg);
+      else if (info->int_num == flag_hex)
+	s = rz_xtoa((unsigned short)arg);
+      else if (info->int_num == flag_Hex)
+	s = rz_Xtoa((unsigned short)arg);
+      else
+	s = rz_ultoa((unsigned short)arg);
     }
-  else if (*p == 'h' && p[1] == 'h' && (p[2] == 'd' || p[2] == 'i'))
+  else
     {
-      s = rz_ltoa((signed char)arg);
-      (*f) += 3;
+      if (info->int_num == flag_oct)
+	s = rz_otoa(arg);
+      else if (info->int_num == flag_hex)
+	s = rz_xtoa(arg);
+      else if (info->int_num == flag_Hex)
+	s = rz_Xtoa(arg);
+      else if (info->int_num == flag_p)
+	s = rz_ptoa(arg);
+      else
+	s = rz_ultoa(arg);
     }
   result = rz_write(0, s, ft_strlen(s));
   free(s);
   return result;
 }
 
-static int print_uint_arg(const char **f, unsigned arg)
+static struct arg_info parse_arg(const char **p)
 {
-  const char *p;
-  char *s;
-  int result;
+  const char *base;
+  struct arg_info info;
 
-  p = *f;
-  if (*p == 'u')
-    {
-      s = rz_ultoa(arg);
-      (*f)++;
-    }
-  else if (*p == 'c')
-    {
-      char ch = (unsigned char) arg;
-      (*f)++;
-      return rz_write(0, &ch, 1);
-    }
-  else if (*p == 'o')
-    {
-      s = rz_otoa(arg);
-      (*f)++;
-    }
-  else if (*p == 'x')
-    {
-      s = rz_xtoa(arg);
-      (*f)++;
-    }
-  else if (*p == 'X')
-    {
-      s = rz_Xtoa(arg);
-      (*f)++;
-    }
-  else if (*p == 'h' && p[1] == 'u')
-    {
-      s = rz_ultoa((unsigned short)arg);
-      (*f) += 2;
-    }
-  else if (*p == 'h' && p[1] == 'o')
-    {
-      s = rz_otoa((unsigned short)arg);
-      (*f) += 2;
-    }
-  else if (*p == 'h' && p[1] == 'x')
-    {
-      s = rz_xtoa((unsigned short)arg);
-      (*f) += 2;
-    }
-  else if (*p == 'h' && p[1] == 'X')
-    {
-      s = rz_Xtoa((unsigned short)arg);
-      (*f) += 2;
-    }
-  else if (*p == 'h' && p[1] == 'h' && p[2] == 'u')
-    {
-      s = rz_ultoa((unsigned char)arg);
-      (*f) += 3;
-    }
-  else if (*p == 'h' && p[1] == 'h' && p[2] == 'o')
-    {
-      s = rz_otoa((unsigned char)arg);
-      (*f) += 3;
-    }
-  else if (*p == 'h' && p[1] == 'h' && p[2] == 'x')
-    {
-      s = rz_xtoa((unsigned char)arg);
-      (*f) += 3;
-    }
-  else if (*p == 'h' && p[1] == 'h' && p[2] == 'X')
-    {
-      s = rz_Xtoa((unsigned char)arg);
-      (*f) += 3;
-    }
-  result = rz_write(0, s, ft_strlen(s));
-  free(s);
-  return result;
+  base = *p;
+  info.arg_len = parse_arg_len_type(p);
+  info.va_conv = parse_va_conv_type(*p, info.arg_len);
+  info.int_num = parse_int_num_type(*p);
+  info.fmt_len = *p - base + 1;
+  (*p)++;
+  
+  return info;
 }
 
-static int print_long_arg(const char **f, long arg)
+static int print_cstring_arg(const struct arg_info *info, const char *arg)
 {
-  const char *p;
-  char *s;
-  int result;
-
-  p = *f;
-  if (*p == 'l' && (p[1] == 'd' || p[1] == 'i'))
-    {
-      s = rz_ltoa(arg);
-      (*f) += 2;
-    }
-  else if (*p == 'l' && p[1] == 'l' && (p[2] == 'd' || p[2] == 'i'))
-    {
-      s = rz_ltoa(arg);
-      (*f) += 3;
-    }
-  result = rz_write(0, s, ft_strlen(s));
-  free(s);
-  return result;
-}
-
-static int print_ulong_arg(const char **f, unsigned long arg)
-{
-  const char *p;
-  char *s;
-  int result;
-
-  p = *f;
-  if (*p == 'p')
-    {
-      s = rz_ptoa(arg);
-      (*f)++;
-    }
-  else if (*p == 'l' && p[1] == 'u')
-    {
-      s = rz_ultoa(arg);
-      (*f) += 2;
-    }
-  else if (*p == 'l' && p[1] == 'o')
-    {
-      s = rz_otoa(arg);
-      (*f) += 2;
-    }
-  else if (*p == 'l' && p[1] == 'x')
-    {
-      s = rz_xtoa(arg);
-      (*f) += 2;
-    }
-  else if (*p == 'l' && p[1] == 'X')
-    {
-      s = rz_Xtoa(arg);
-      (*f) += 2;
-    }
-  else if (*p == 'l' && p[1] == 'l' && p[2] == 'u')
-    {
-      s = rz_ultoa(arg);
-      (*f) += 3;
-    }
-  else if (*p == 'l' && p[1] == 'l' && p[2] == 'o')
-    {
-      s = rz_otoa(arg);
-      (*f) += 3;
-    }
-  else if (*p == 'l' && p[1] == 'l' && p[2] == 'x')
-    {
-      s = rz_xtoa(arg);
-      (*f) += 3;
-    }
-  else if (*p == 'l' && p[1] == 'l' && p[2] == 'X')
-    {
-      s = rz_Xtoa(arg);
-      (*f) += 3;
-    }
-  result = rz_write(0, s, ft_strlen(s));
-  free(s);
-  return result;
-}
-
-static int print_cstring_arg(const char **f, const char *arg)
-{
-  (*f)++;
+  (void) info;
   if (*arg == '\0')
     return 0;
   return rz_write(0, arg, ft_strlen(arg));
@@ -244,7 +151,7 @@ static int print_cstring_arg(const char **f, const char *arg)
 
 int ft_printf(const char *f, ...)
 {
-  int arg_type;
+  struct arg_info info;
   int result;
   va_list ap;
 
@@ -259,19 +166,27 @@ int ft_printf(const char *f, ...)
       else
 	{
 	  f++;
-	  arg_type = parse_va_arg_type(f);
-	  if (arg_type == va_i)
-	    result += print_int_arg(&f, va_arg(ap, int));
-	  else if (arg_type == va_u)
-	    result += print_uint_arg(&f, va_arg(ap, unsigned int));
-	  else if (arg_type == va_l)
-	    result += print_long_arg(&f, va_arg(ap, long));
-	  else if (arg_type == va_ul)
-	    result += print_ulong_arg(&f, va_arg(ap, unsigned long));
-	  else if (arg_type == va_cs)
-	    result += print_cstring_arg(&f, va_arg(ap, const char *));
-	  else if (arg_type == va_percent)
+	  if (*f == '%')
 	    result += rz_write(0, f++, 1);
+	  else
+	    {
+	      info = parse_arg(&f);
+	      if (info.va_conv == va_i)
+		result += print_long_arg(&info, va_arg(ap, int));
+	      else if (info.va_conv == va_u)
+		result += print_ulong_arg(&info, va_arg(ap, unsigned int));
+	      else if (info.va_conv == va_l)
+		result += print_long_arg(&info, va_arg(ap, long));
+	      else if (info.va_conv == va_ul)
+		result += print_ulong_arg(&info, va_arg(ap, unsigned long));
+	      else if (info.va_conv == va_c)
+		{
+		  char ch = va_arg(ap, unsigned int);
+		  result += rz_write(0, &ch, 1);
+		}
+	      else if (info.va_conv == va_cs)
+		result += print_cstring_arg(&info, va_arg(ap, const char *));
+	    }
 	}
     }
   va_end(ap);
