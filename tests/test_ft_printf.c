@@ -87,8 +87,8 @@ START_TEST(test_single_format_param_percent)
   const char *format = "%%";
   int actual_result = ft_printf(format);
   int expected_result = snprintf(buffer, sizeof buffer, format);
-  ck_assert_int_eq(actual_result, expected_result);
   ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
 }
 END_TEST
 

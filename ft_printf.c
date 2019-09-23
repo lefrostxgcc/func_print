@@ -3,8 +3,8 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
-enum va_conv_type {va_i, va_u, va_l, va_ul, va_c, va_s};
-enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X,
+enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul};
+enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X, f_percent,
 		f_hh, f_h, f_l, f_ll};
 struct arg_info
 {
@@ -12,6 +12,7 @@ struct arg_info
   enum flag_type size;
   enum flag_type core;
   int fmt_len;
+  int total_len;
 };
 
 static enum va_conv_type select_va_conv_type(const struct arg_info *info)
@@ -23,14 +24,12 @@ static enum va_conv_type select_va_conv_type(const struct arg_info *info)
   else if (info->core == f_d || info->core == f_i)
     return va_i;
   else if (info->core == f_u || info->core == f_o ||
-	   info->core == f_x || info->core == f_X)
+	   info->core == f_x || info->core == f_X || info->core == f_c)
     return va_u;
-  else if (info->core == f_s)
-    return va_s;
-  else if (info->core == f_p)
+  else if (info->core == f_s || info->core == f_p)
     return va_ul;
-  else if (info->core == f_c)
-    return va_c;
+  else if (info->core == f_percent)
+    return va_percent;
   return va_i;
 }
 
@@ -70,13 +69,32 @@ static enum flag_type parse_arg_core(const char *p)
     return f_x;
   else if (*p == 'X')
     return f_X;
+  else if (*p == '%')
+    return f_percent;
   return f_d;
 }
 
-static int print_long_arg(struct arg_info *info, long arg)
+static void parse_fmt(struct arg_info *info, const char **p)
+{
+  const char *base;
+
+  if (**p != '%')
+    info->va_conv = va_none;
+  else
+    {
+      (*p)++;
+      base = *p;
+      info->size = parse_arg_size(p);
+      info->core = parse_arg_core(*p);
+      info->va_conv = select_va_conv_type(info);
+      info->fmt_len = *p - base + 1;
+      (*p)++;
+    }
+}
+
+static void print_long_arg(struct arg_info *info, long arg)
 {
   char *s;
-  int result;
 
   if (info->size == f_hh)
     s = rz_ltoa((signed char)arg);
@@ -84,16 +102,36 @@ static int print_long_arg(struct arg_info *info, long arg)
     s = rz_ltoa((short)arg);
   else
     s = rz_ltoa(arg);
-  result = rz_write(0, s, ft_strlen(s));
+  info->total_len += rz_write(0, s, ft_strlen(s));
   free(s);
-  return result;
 }
 
-static int print_ulong_arg(struct arg_info *info, unsigned long arg)
+static void print_char(struct arg_info *info, char ch)
+{
+  info->total_len += rz_write(0, &ch, 1);
+}
+
+static void print_cstring_arg(struct arg_info *info, const char *arg)
+{
+  if (*arg == '\0')
+    return;
+  info->total_len += rz_write(0, arg, ft_strlen(arg));
+}
+
+static void print_ulong_arg(struct arg_info *info, unsigned long arg)
 {
   char *s;
-  int result;
 
+  if (info->core == f_c)
+    {
+      print_char(info, arg);
+      return;
+    }
+  if (info->core == f_s)
+    {
+      print_cstring_arg(info, (const char *)arg);
+      return;
+    }
   if (info->size == f_hh)
     {
       if (info->core == f_o)
@@ -129,74 +167,49 @@ static int print_ulong_arg(struct arg_info *info, unsigned long arg)
       else
 	s = rz_ultoa(arg);
     }
-  result = rz_write(0, s, ft_strlen(s));
+  info->total_len += rz_write(0, s, ft_strlen(s));
   free(s);
-  return result;
 }
 
-static struct arg_info parse_arg(const char **p)
+static void print_fmt(struct arg_info *info, const char **s)
 {
-  const char *base;
-  struct arg_info info;
+  const char *p;
 
-  base = *p;
-  info.size = parse_arg_size(p);
-  info.core = parse_arg_core(*p);
-  info.va_conv = select_va_conv_type(&info);
-  info.fmt_len = *p - base + 1;
-  (*p)++;
-  
-  return info;
-}
-
-static int print_cstring_arg(const struct arg_info *info, const char *arg)
-{
-  (void) info;
-  if (*arg == '\0')
-    return 0;
-  return rz_write(0, arg, ft_strlen(arg));
+  p = *s;
+  if (info->va_conv == va_percent)
+      print_char(info, '%');
+  else
+    {
+      while (*p && *p != '%')
+	p++;
+      info->total_len += rz_write(0, *s, p - *s);
+    }
+  *s = p;
 }
 
 int ft_printf(const char *f, ...)
 {
   struct arg_info info;
-  int result;
   va_list ap;
 
-  result = f ? 0 : -1;
   if (!f)
     return -1;
+  info.total_len = 0;
   va_start(ap, f);
   while (*f != '\0')
     {
-      if (*f != '%')
-	result += rz_write(0, f++, 1);
-      else
-	{
-	  f++;
-	  if (*f == '%')
-	    result += rz_write(0, f++, 1);
-	  else
-	    {
-	      info = parse_arg(&f);
-	      if (info.va_conv == va_i)
-		result += print_long_arg(&info, va_arg(ap, int));
-	      else if (info.va_conv == va_u)
-		result += print_ulong_arg(&info, va_arg(ap, unsigned int));
-	      else if (info.va_conv == va_l)
-		result += print_long_arg(&info, va_arg(ap, long));
-	      else if (info.va_conv == va_ul)
-		result += print_ulong_arg(&info, va_arg(ap, unsigned long));
-	      else if (info.va_conv == va_c)
-		{
-		  char ch = va_arg(ap, unsigned int);
-		  result += rz_write(0, &ch, 1);
-		}
-	      else if (info.va_conv == va_s)
-		result += print_cstring_arg(&info, va_arg(ap, const char *));
-	    }
-	}
+      parse_fmt(&info, &f);
+      if (info.va_conv == va_none || info.va_conv == va_percent)
+	print_fmt(&info, &f);
+      else if (info.va_conv == va_i)
+	print_long_arg(&info, va_arg(ap, int));
+      else if (info.va_conv == va_u)
+	print_ulong_arg(&info, va_arg(ap, unsigned int));
+      else if (info.va_conv == va_l)
+	print_long_arg(&info, va_arg(ap, long));
+      else if (info.va_conv == va_ul)
+	print_ulong_arg(&info, va_arg(ap, unsigned long));
     }
   va_end(ap);
-  return result;
+  return info.total_len;
 }
