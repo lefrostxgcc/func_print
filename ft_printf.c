@@ -3,18 +3,6 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
-enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul};
-enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X, f_percent,
-		f_hh, f_h, f_l, f_ll};
-struct arg_info
-{
-  enum va_conv_type va_conv;
-  enum flag_type size;
-  enum flag_type core;
-  int fmt_len;
-  int total_len;
-};
-
 static enum va_conv_type select_va_conv_type(const struct arg_info *info)
 {
   if (info->size == f_hh || info->size == f_h)
@@ -123,52 +111,20 @@ static void print_ulong_arg(struct arg_info *info, unsigned long arg)
   char *s;
 
   if (info->core == f_c)
-    {
       print_char(info, arg);
-      return;
-    }
-  if (info->core == f_s)
-    {
+  else if (info->core == f_s)
       print_cstring_arg(info, (const char *)arg);
-      return;
-    }
-  if (info->size == f_hh)
-    {
-      if (info->core == f_o)
-	s = rz_otoa((unsigned char)arg);
-      else if (info->core == f_x)
-	s = rz_xtoa((unsigned char)arg);
-      else if (info->core == f_X)
-	s = rz_Xtoa((unsigned char)arg);
-      else
-	s = rz_ultoa((unsigned char)arg);
-    }
-  else if (info->size == f_h)
-    {
-      if (info->core == f_o)
-	s = rz_otoa((unsigned short)arg);
-      else if (info->core == f_x)
-	s = rz_xtoa((unsigned short)arg);
-      else if (info->core == f_X)
-	s = rz_Xtoa((unsigned short)arg);
-      else
-	s = rz_ultoa((unsigned short)arg);
-    }
   else
     {
-      if (info->core == f_o)
-	s = rz_otoa(arg);
-      else if (info->core == f_x)
-	s = rz_xtoa(arg);
-      else if (info->core == f_X)
-	s = rz_Xtoa(arg);
-      else if (info->core == f_p)
-	s = rz_ptoa(arg);
+      if (info->size == f_hh)
+	s = rz_ultoa((unsigned char)arg, info->core);
+      else if (info->size == f_h)
+	s = rz_ultoa((unsigned short)arg, info->core);
       else
-	s = rz_ultoa(arg);
+	s = rz_ultoa(arg, info->core);
+      info->total_len += rz_write(0, s, ft_strlen(s));
+      free(s);
     }
-  info->total_len += rz_write(0, s, ft_strlen(s));
-  free(s);
 }
 
 static void print_fmt(struct arg_info *info, const char **s)
