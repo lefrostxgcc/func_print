@@ -219,14 +219,29 @@ static void print_arg(struct arg_info *info, const char *arg)
     }
   else if (info->width > len)
     {
-      s = (char *) malloc(sizeof (char) * (info->width + 1));
-      if (info->has_zero)
-	ft_memset(s, '0', info->width);
+      if (info->has_zero && is_signed_core_flag(info->core) && *arg == '-')
+	{
+	  s = (char *) malloc(sizeof (char) * (info->width + 2));
+	  ft_memset(s, '0', info->width);
+	}
+      else if (info->has_zero && is_signed_core_flag(info->core) && *arg != '-')
+	{
+	  s = (char *) malloc(sizeof (char) * (info->width + 1));
+	  ft_memset(s, '0', info->width);
+	}
       else
-	ft_memset(s, ' ', info->width);
+	{
+	  s = (char *) malloc(sizeof (char) * (info->width + 1));
+	  ft_memset(s, ' ', info->width);
+	}
       if (info->has_plus && is_signed_core_flag(info->core) && *arg != '-')
 	s[info->width - len - 1] = '+';
-      if (info->has_minus)
+      if (info->has_zero && is_signed_core_flag(info->core) && *arg == '-')
+	{
+	  s[0] = '-';
+	  ft_strcpy(s + info->width - len + 1, arg + 1);
+	}
+      else if (info->has_minus)
 	ft_memcpy(s, arg, len);
       else
 	ft_strcpy(s + (info->width - len), arg);
