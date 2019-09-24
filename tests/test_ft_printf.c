@@ -1815,6 +1815,18 @@ START_TEST(test_plus_p_width_smaller)
 }
 END_TEST
 
+START_TEST(test_pound_o)
+{
+  char buffer[128];
+  const char *format = "[%#o]";
+  unsigned a = 01234567;
+  int actual_result = ft_printf(format, &a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, &a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -1824,6 +1836,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_precision;
   TCase *tc_minus;
   TCase *tc_plus;
+  TCase *tc_pound;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -1969,71 +1982,75 @@ Suite *ft_printf_suite(void)
 
   tc_minus = tcase_create("Minus");
   tcase_add_checked_fixture(tc_minus, setup_ft_printf, teardown_ft_printf);
-  tcase_add_test(tc_precision, test_minus_s);
-  tcase_add_test(tc_precision, test_minus_s_width_greater);
-  tcase_add_test(tc_precision, test_minus_s_width_smaller);
-  tcase_add_test(tc_precision, test_minus_s_width_equal);
+  tcase_add_test(tc_minus, test_minus_s);
+  tcase_add_test(tc_minus, test_minus_s_width_greater);
+  tcase_add_test(tc_minus, test_minus_s_width_smaller);
+  tcase_add_test(tc_minus, test_minus_s_width_equal);
 
-  tcase_add_test(tc_precision, test_minus_d_width_smaller);
-  tcase_add_test(tc_precision, test_minus_d_width_equal);
-  tcase_add_test(tc_precision, test_minus_d_width_greater);
+  tcase_add_test(tc_minus, test_minus_d_width_smaller);
+  tcase_add_test(tc_minus, test_minus_d_width_equal);
+  tcase_add_test(tc_minus, test_minus_d_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_i_width_smaller);
-  tcase_add_test(tc_precision, test_minus_i_width_equal);
-  tcase_add_test(tc_precision, test_minus_i_width_greater);
+  tcase_add_test(tc_minus, test_minus_i_width_smaller);
+  tcase_add_test(tc_minus, test_minus_i_width_equal);
+  tcase_add_test(tc_minus, test_minus_i_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_u_width_smaller);
-  tcase_add_test(tc_precision, test_minus_u_width_equal);
-  tcase_add_test(tc_precision, test_minus_u_width_greater);
+  tcase_add_test(tc_minus, test_minus_u_width_smaller);
+  tcase_add_test(tc_minus, test_minus_u_width_equal);
+  tcase_add_test(tc_minus, test_minus_u_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_o_width_smaller);
-  tcase_add_test(tc_precision, test_minus_o_width_equal);
-  tcase_add_test(tc_precision, test_minus_o_width_greater);
+  tcase_add_test(tc_minus, test_minus_o_width_smaller);
+  tcase_add_test(tc_minus, test_minus_o_width_equal);
+  tcase_add_test(tc_minus, test_minus_o_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_x_width_smaller);
-  tcase_add_test(tc_precision, test_minus_x_width_equal);
-  tcase_add_test(tc_precision, test_minus_x_width_greater);
+  tcase_add_test(tc_minus, test_minus_x_width_smaller);
+  tcase_add_test(tc_minus, test_minus_x_width_equal);
+  tcase_add_test(tc_minus, test_minus_x_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_X_width_smaller);
-  tcase_add_test(tc_precision, test_minus_X_width_equal);
-  tcase_add_test(tc_precision, test_minus_X_width_greater);
+  tcase_add_test(tc_minus, test_minus_X_width_smaller);
+  tcase_add_test(tc_minus, test_minus_X_width_equal);
+  tcase_add_test(tc_minus, test_minus_X_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_p_width_smaller);
-  tcase_add_test(tc_precision, test_minus_p_width_equal);
-  tcase_add_test(tc_precision, test_minus_p_width_greater);
+  tcase_add_test(tc_minus, test_minus_p_width_smaller);
+  tcase_add_test(tc_minus, test_minus_p_width_equal);
+  tcase_add_test(tc_minus, test_minus_p_width_greater);
 
-  tcase_add_test(tc_precision, test_minus_c_width_equal);
-  tcase_add_test(tc_precision, test_minus_c_width_greater);
+  tcase_add_test(tc_minus, test_minus_c_width_equal);
+  tcase_add_test(tc_minus, test_minus_c_width_greater);
 
   tc_plus = tcase_create("Plus");
   tcase_add_checked_fixture(tc_plus, setup_ft_printf, teardown_ft_printf);
-  tcase_add_test(tc_precision, test_plus_d_width_greater);
-  tcase_add_test(tc_precision, test_plus_d_width_equal);
-  tcase_add_test(tc_precision, test_plus_d_width_smaller);
+  tcase_add_test(tc_plus, test_plus_d_width_greater);
+  tcase_add_test(tc_plus, test_plus_d_width_equal);
+  tcase_add_test(tc_plus, test_plus_d_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_i_width_greater);
-  tcase_add_test(tc_precision, test_plus_i_width_equal);
-  tcase_add_test(tc_precision, test_plus_i_width_smaller);
+  tcase_add_test(tc_plus, test_plus_i_width_greater);
+  tcase_add_test(tc_plus, test_plus_i_width_equal);
+  tcase_add_test(tc_plus, test_plus_i_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_u_width_greater);
-  tcase_add_test(tc_precision, test_plus_u_width_equal);
-  tcase_add_test(tc_precision, test_plus_u_width_smaller);
+  tcase_add_test(tc_plus, test_plus_u_width_greater);
+  tcase_add_test(tc_plus, test_plus_u_width_equal);
+  tcase_add_test(tc_plus, test_plus_u_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_o_width_greater);
-  tcase_add_test(tc_precision, test_plus_o_width_equal);
-  tcase_add_test(tc_precision, test_plus_o_width_smaller);
+  tcase_add_test(tc_plus, test_plus_o_width_greater);
+  tcase_add_test(tc_plus, test_plus_o_width_equal);
+  tcase_add_test(tc_plus, test_plus_o_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_x_width_greater);
-  tcase_add_test(tc_precision, test_plus_x_width_equal);
-  tcase_add_test(tc_precision, test_plus_x_width_smaller);
+  tcase_add_test(tc_plus, test_plus_x_width_greater);
+  tcase_add_test(tc_plus, test_plus_x_width_equal);
+  tcase_add_test(tc_plus, test_plus_x_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_X_width_greater);
-  tcase_add_test(tc_precision, test_plus_X_width_equal);
-  tcase_add_test(tc_precision, test_plus_X_width_smaller);
+  tcase_add_test(tc_plus, test_plus_X_width_greater);
+  tcase_add_test(tc_plus, test_plus_X_width_equal);
+  tcase_add_test(tc_plus, test_plus_X_width_smaller);
 
-  tcase_add_test(tc_precision, test_plus_p_width_greater);
-  tcase_add_test(tc_precision, test_plus_p_width_equal);
-  tcase_add_test(tc_precision, test_plus_p_width_smaller);
+  tcase_add_test(tc_plus, test_plus_p_width_greater);
+  tcase_add_test(tc_plus, test_plus_p_width_equal);
+  tcase_add_test(tc_plus, test_plus_p_width_smaller);
+
+  tc_pound = tcase_create("Pound");
+  tcase_add_checked_fixture(tc_pound, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_pound, test_pound_o);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -2041,6 +2058,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_precision);
   suite_add_tcase(s, tc_minus);
   suite_add_tcase(s, tc_plus);
+  suite_add_tcase(s, tc_pound);
 
   return s;
 }

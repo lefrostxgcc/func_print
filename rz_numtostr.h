@@ -11,6 +11,7 @@ struct arg_info
   enum flag_type core;
   int has_minus;
   int has_plus;
+  int has_pound;
   int width;
   int precision;
   int fmt_len;
