@@ -88,6 +88,17 @@ static int parse_arg_minus(const char **s)
     return 0;
 }
 
+static int parse_arg_plus(const char **s)
+{
+  if (**s == '+')
+    {
+      (*s)++;
+      return 1;
+    }
+  else
+    return 0;
+}
+
 static enum flag_type parse_arg_core(const char *p)
 {
   if (*p == 'c')
@@ -122,6 +133,7 @@ static void parse_fmt(struct arg_info *info, const char **p)
       (*p)++;
       base = *p;
       info->has_minus = parse_arg_minus(p);
+      info->has_plus = parse_arg_plus(p);
       info->width = parse_arg_width(p);
       info->precision = parse_arg_precision(p);
       info->size = parse_arg_size(p);
@@ -176,6 +188,8 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
       ft_memset(s, ' ', info->width);
+      if (info->has_plus)
+	s[info->width - len - 1] = '+';
       if (info->has_minus)
 	ft_memcpy(s, arg, len);
       else
