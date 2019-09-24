@@ -66,7 +66,7 @@ static int parse_arg_width(const char **s)
 static int parse_arg_precision(const char **s)
 {
   if (**s != '.')
-    return 0;
+    return -1;
   (*s)++;
   return read_number(s);
 }
@@ -122,7 +122,11 @@ static void print_arg(struct arg_info *info, const char *arg)
   if (*arg == '\0')
     return;
   len = ft_strlen(arg);
-  if (info->width > len)
+  if (info->core == f_s && info->precision < len && info->precision != -1)
+    {
+      info->total_len += rz_write(0, arg, info->precision);
+    }
+  else if (info->width > len)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
       ft_memset(s, ' ', info->width);
