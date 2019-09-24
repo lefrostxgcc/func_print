@@ -143,7 +143,11 @@ static void print_long_arg(struct arg_info *info, long arg)
 
 static void print_char(struct arg_info *info, char ch)
 {
-  info->total_len += rz_write(0, &ch, 1);
+  char buf[2];
+
+  buf[0] = ch;
+  buf[1] = '\0';
+  print_arg(info, buf);
 }
 
 static void print_ulong_arg(struct arg_info *info, unsigned long arg)
