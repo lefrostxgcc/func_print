@@ -199,6 +199,8 @@ static void print_arg(struct arg_info *info, const char *arg)
     }
   else
     {
+      if (info->has_plus)
+	info->total_len += rz_write(0, "+", 1);
       info->total_len += rz_write(0, arg, len);
     }
 }
