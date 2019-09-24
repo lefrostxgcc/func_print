@@ -12,6 +12,7 @@ struct arg_info
   int has_minus;
   int has_plus;
   int has_pound;
+  int has_zero;
   int width;
   int precision;
   int fmt_len;
