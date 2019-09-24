@@ -5,12 +5,12 @@
 
 static int is_signed_core_flag(enum flag_type f)
 {
-  return f == f_d || f == f_i;
+  return f == f_d || f == f_i || f == f_p;
 }
 
 static int is_unsigned_core_flag(enum flag_type f)
 {
-  return f == f_u || f == f_o || f == f_x || f == f_X || f == f_p;
+  return f == f_u || f == f_o || f == f_x || f == f_X;
 }
 
 static int is_number_core_flag(enum flag_type f)
