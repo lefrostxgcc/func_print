@@ -176,7 +176,10 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
       ft_memset(s, ' ', info->width);
-      ft_strcpy(s + (info->width - len), arg);
+      if (info->has_minus)
+	ft_memcpy(s, arg, len);
+      else
+	ft_strcpy(s + (info->width - len), arg);
       info->total_len += rz_write(0, s, info->width);
       free(s);
     }
