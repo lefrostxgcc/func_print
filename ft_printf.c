@@ -39,6 +39,30 @@ static enum flag_type parse_arg_size(const char **s)
   return t;
 }
 
+static int read_number(const char **s)
+{
+  const char *start;
+  const char *end;
+  int number;
+
+  number = 0;
+  start = end = *s;
+  while (ft_isdigit(*end))
+    end++;
+  *s = end;
+  while (start < end)
+    {
+      number = number * 10 + (*start - '0');
+      start++;
+    }
+  return number;
+}
+
+static int parse_arg_width(const char **s)
+{
+  return read_number(s);
+}
+
 static enum flag_type parse_arg_core(const char *p)
 {
   if (*p == 'c')
@@ -72,11 +96,34 @@ static void parse_fmt(struct arg_info *info, const char **p)
     {
       (*p)++;
       base = *p;
+      info->width = parse_arg_width(p);
       info->size = parse_arg_size(p);
       info->core = parse_arg_core(*p);
       info->va_conv = select_va_conv_type(info);
       info->fmt_len = *p - base + 1;
       (*p)++;
+    }
+}
+
+static void print_arg(struct arg_info *info, const char *arg)
+{
+  char *s;
+  int len;
+
+  if (*arg == '\0')
+    return;
+  len = ft_strlen(arg);
+  if (info->width > len)
+    {
+      s = (char *) malloc(sizeof (char) * (info->width + 1));
+      ft_memset(s, ' ', info->width);
+      ft_strcpy(s + (info->width - len), arg);
+      info->total_len += rz_write(0, s, info->width);
+      free(s);
+    }
+  else
+    {
+      info->total_len += rz_write(0, arg, len);
     }
 }
 
@@ -99,13 +146,6 @@ static void print_char(struct arg_info *info, char ch)
   info->total_len += rz_write(0, &ch, 1);
 }
 
-static void print_cstring_arg(struct arg_info *info, const char *arg)
-{
-  if (*arg == '\0')
-    return;
-  info->total_len += rz_write(0, arg, ft_strlen(arg));
-}
-
 static void print_ulong_arg(struct arg_info *info, unsigned long arg)
 {
   char *s;
@@ -113,7 +153,7 @@ static void print_ulong_arg(struct arg_info *info, unsigned long arg)
   if (info->core == f_c)
       print_char(info, arg);
   else if (info->core == f_s)
-      print_cstring_arg(info, (const char *)arg);
+      print_arg(info, (const char *)arg);
   else
     {
       if (info->size == f_hh)
