@@ -162,7 +162,7 @@ static void print_ulong_arg(struct arg_info *info, unsigned long arg)
 	s = rz_ultoa((unsigned short)arg, info->core);
       else
 	s = rz_ultoa(arg, info->core);
-      info->total_len += rz_write(0, s, ft_strlen(s));
+      print_arg(info, s);
       free(s);
     }
 }
