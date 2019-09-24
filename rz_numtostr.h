@@ -9,6 +9,7 @@ struct arg_info
   enum va_conv_type va_conv;
   enum flag_type size;
   enum flag_type core;
+  int has_minus;
   int width;
   int precision;
   int fmt_len;

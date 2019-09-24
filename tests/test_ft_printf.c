@@ -1239,6 +1239,18 @@ START_TEST(test_precision_p_greater)
 }
 END_TEST
 
+START_TEST(test_minus_s)
+{
+  char buffer[128];
+  const char *format = "[%-s]";
+  const char *s = "Text";
+  int actual_result = ft_printf(format, s);
+  int expected_result = snprintf(buffer, sizeof buffer, format, s);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -1246,6 +1258,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_single_param;
   TCase *tc_width;
   TCase *tc_precision;
+  TCase *tc_minus;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -1388,11 +1401,16 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_precision, test_precision_p_zero);
   tcase_add_test(tc_precision, test_precision_p_dot);
   tcase_add_test(tc_precision, test_precision_p_greater);
+
+  tc_minus = tcase_create("Minus");
+  tcase_add_checked_fixture(tc_minus, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_precision, test_minus_s);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
   suite_add_tcase(s, tc_width);
   suite_add_tcase(s, tc_precision);
+  suite_add_tcase(s, tc_minus);
 
   return s;
 }
