@@ -3,10 +3,19 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
+static int is_signed_core_flag(enum flag_type f)
+{
+  return f == f_d || f == f_i;
+}
+
+static int is_unsigned_core_flag(enum flag_type f)
+{
+  return f == f_u || f == f_o || f == f_x || f == f_X || f == f_p;
+}
+
 static int is_number_core_flag(enum flag_type f)
 {
-  return f == f_d || f == f_i || f == f_u || f == f_o ||
-    f == f_x || f == f_X || f == f_p;
+  return is_signed_core_flag(f) || is_unsigned_core_flag(f);
 }
 
 static enum va_conv_type select_va_conv_type(const struct arg_info *info)
@@ -188,7 +197,7 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
       ft_memset(s, ' ', info->width);
-      if (info->has_plus && *arg != '-')
+      if (info->has_plus && is_signed_core_flag(info->core) && *arg != '-')
 	s[info->width - len - 1] = '+';
       if (info->has_minus)
 	ft_memcpy(s, arg, len);
@@ -199,7 +208,7 @@ static void print_arg(struct arg_info *info, const char *arg)
     }
   else
     {
-      if (info->has_plus && *arg != '-')
+      if (info->has_plus && is_signed_core_flag(info->core) && *arg != '-')
 	info->total_len += rz_write(0, "+", 1);
       info->total_len += rz_write(0, arg, len);
     }
