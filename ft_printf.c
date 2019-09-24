@@ -224,6 +224,8 @@ static void print_arg(struct arg_info *info, const char *arg)
 	info->total_len += rz_write(0, "+", 1);
       if (info->has_pound && info->core == f_o)
 	info->total_len += rz_write(0, "0", 1);
+      if (info->has_pound && info->core == f_x)
+	info->total_len += rz_write(0, "0x", 2);
       info->total_len += rz_write(0, arg, len);
     }
 }
