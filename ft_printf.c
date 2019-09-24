@@ -6,7 +6,7 @@
 static int is_number_core_flag(enum flag_type f)
 {
   return f == f_d || f == f_i || f == f_u || f == f_o ||
-    f == f_x || f == f_X;
+    f == f_x || f == f_X || f == f_p;
 }
 
 static enum va_conv_type select_va_conv_type(const struct arg_info *info)
@@ -134,7 +134,16 @@ static void print_arg(struct arg_info *info, const char *arg)
     }
   else if (is_number_core_flag(info->core) && info->precision > len)
     {
-      if (*arg == '-')
+      if (info->core == f_p)
+	{
+	  s = (char *) malloc(sizeof (char) * (info->precision + 3));
+	  ft_memset(s, '0', info->precision + 3);
+	  s[0] = '0';
+	  s[1] = 'x';
+	  ft_strcpy(s + 2 + (info->precision - len + 2), arg + 2);
+	  info->total_len += rz_write(0, s, info->precision + 2);
+	}
+      else if (*arg == '-')
 	{
 	  s = (char *) malloc(sizeof (char) * (info->precision + 2));
 	  ft_memset(s, '0', info->precision + 1);
