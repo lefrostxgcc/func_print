@@ -229,6 +229,11 @@ static void print_arg(struct arg_info *info, const char *arg)
 	  s = (char *) malloc(sizeof (char) * (info->width + 1));
 	  ft_memset(s, '0', info->width);
 	}
+      else if (info->has_zero && is_unsigned_core_flag(info->core))
+	{
+	  s = (char *) malloc(sizeof (char) * (info->width + 1));
+	  ft_memset(s, '0', info->width);
+	}
       else
 	{
 	  s = (char *) malloc(sizeof (char) * (info->width + 1));
