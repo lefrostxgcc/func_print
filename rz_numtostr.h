@@ -10,6 +10,7 @@ struct arg_info
   enum flag_type size;
   enum flag_type core;
   int width;
+  int precision;
   int fmt_len;
   int total_len;
 };

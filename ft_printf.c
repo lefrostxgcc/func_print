@@ -63,6 +63,14 @@ static int parse_arg_width(const char **s)
   return read_number(s);
 }
 
+static int parse_arg_precision(const char **s)
+{
+  if (**s != '.')
+    return 0;
+  (*s)++;
+  return read_number(s);
+}
+
 static enum flag_type parse_arg_core(const char *p)
 {
   if (*p == 'c')
@@ -97,6 +105,7 @@ static void parse_fmt(struct arg_info *info, const char **p)
       (*p)++;
       base = *p;
       info->width = parse_arg_width(p);
+      info->precision = parse_arg_precision(p);
       info->size = parse_arg_size(p);
       info->core = parse_arg_core(*p);
       info->va_conv = select_va_conv_type(info);
