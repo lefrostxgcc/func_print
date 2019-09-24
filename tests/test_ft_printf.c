@@ -771,6 +771,18 @@ START_TEST(test_precision_s_greater)
 }
 END_TEST
 
+START_TEST(test_precision_s_equal)
+{
+  char buffer[128];
+  const char *format = "%.4s";
+  const char *s = "abcD";
+  int actual_result = ft_printf(format, s);
+  int expected_result = snprintf(buffer, sizeof buffer, format, s);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -874,6 +886,7 @@ Suite *ft_printf_suite(void)
   tc_precision = tcase_create("Precision");
   tcase_add_checked_fixture(tc_precision, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_precision, test_precision_s_greater);
+  tcase_add_test(tc_precision, test_precision_s_equal);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
