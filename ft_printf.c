@@ -188,7 +188,7 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
       ft_memset(s, ' ', info->width);
-      if (info->has_plus)
+      if (info->has_plus && *arg != '-')
 	s[info->width - len - 1] = '+';
       if (info->has_minus)
 	ft_memcpy(s, arg, len);
@@ -199,7 +199,7 @@ static void print_arg(struct arg_info *info, const char *arg)
     }
   else
     {
-      if (info->has_plus)
+      if (info->has_plus && *arg != '-')
 	info->total_len += rz_write(0, "+", 1);
       info->total_len += rz_write(0, arg, len);
     }

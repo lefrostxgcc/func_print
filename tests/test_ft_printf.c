@@ -1599,6 +1599,18 @@ START_TEST(test_plus_d_width_smaller)
 }
 END_TEST
 
+START_TEST(test_plus_i_width_greater)
+{
+  char buffer[128];
+  const char *format = "[%+5i]";
+  int a = -12;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -1794,6 +1806,8 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_precision, test_plus_d_width_greater);
   tcase_add_test(tc_precision, test_plus_d_width_equal);
   tcase_add_test(tc_precision, test_plus_d_width_smaller);
+
+  tcase_add_test(tc_precision, test_plus_i_width_greater);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
