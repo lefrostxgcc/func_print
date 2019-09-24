@@ -126,6 +126,14 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       info->total_len += rz_write(0, arg, info->precision);
     }
+  else if (info->core == f_d && info->precision > len)
+    {
+      s = (char *) malloc(sizeof (char) * (info->precision + 1));
+      ft_memset(s, '0', info->precision);
+      ft_strcpy(s + (info->precision - len), arg);
+      info->total_len += rz_write(0, s, info->precision);
+      free(s);
+    }
   else if (info->width > len)
     {
       s = (char *) malloc(sizeof (char) * (info->width + 1));
