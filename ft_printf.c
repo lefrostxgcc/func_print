@@ -137,7 +137,7 @@ static void print_long_arg(struct arg_info *info, long arg)
     s = rz_ltoa((short)arg);
   else
     s = rz_ltoa(arg);
-  info->total_len += rz_write(0, s, ft_strlen(s));
+  print_arg(info, s);
   free(s);
 }
 
