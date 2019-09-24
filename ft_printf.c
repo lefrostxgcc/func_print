@@ -3,6 +3,12 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
+static int is_number_core_flag(enum flag_type f)
+{
+  return f == f_d || f == f_i || f == f_u || f == f_o ||
+    f == f_x || f == f_X;
+}
+
 static enum va_conv_type select_va_conv_type(const struct arg_info *info)
 {
   if (info->size == f_hh || info->size == f_h)
@@ -126,12 +132,23 @@ static void print_arg(struct arg_info *info, const char *arg)
     {
       info->total_len += rz_write(0, arg, info->precision);
     }
-  else if (info->core == f_d && info->precision > len)
+  else if (is_number_core_flag(info->core) && info->precision > len)
     {
-      s = (char *) malloc(sizeof (char) * (info->precision + 1));
-      ft_memset(s, '0', info->precision);
-      ft_strcpy(s + (info->precision - len), arg);
-      info->total_len += rz_write(0, s, info->precision);
+      if (*arg == '-')
+	{
+	  s = (char *) malloc(sizeof (char) * (info->precision + 2));
+	  ft_memset(s, '0', info->precision + 1);
+	  s[0] = '-';
+	  ft_strcpy(s + (info->precision - len + 1) + 1, arg + 1);
+	  info->total_len += rz_write(0, s, info->precision + 1);
+	}
+      else
+	{
+	  s = (char *) malloc(sizeof (char) * (info->precision + 1));
+	  ft_memset(s, '0', info->precision);
+	  ft_strcpy(s + (info->precision - len), arg);
+	  info->total_len += rz_write(0, s, info->precision);
+	}
       free(s);
     }
   else if (info->width > len)
@@ -176,9 +193,9 @@ static void print_ulong_arg(struct arg_info *info, unsigned long arg)
   char *s;
 
   if (info->core == f_c)
-      print_char(info, arg);
+    print_char(info, arg);
   else if (info->core == f_s)
-      print_arg(info, (const char *)arg);
+    print_arg(info, (const char *)arg);
   else
     {
       if (info->size == f_hh)
@@ -198,7 +215,7 @@ static void print_fmt(struct arg_info *info, const char **s)
 
   p = *s;
   if (info->va_conv == va_percent)
-      print_char(info, '%');
+    print_char(info, '%');
   else
     {
       while (*p && *p != '%')
