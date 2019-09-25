@@ -309,17 +309,16 @@ static void print_arg(struct arg_info *info, const char *arg)
 
 static void print_long_arg(struct arg_info *info, long arg)
 {
-  char *s;
-
+  char buf[21];
+  
   if (info->size == f_hh)
-    s = rz_ltoa((signed char)arg);
+    rz_ltoa(buf, (signed char)arg);
   else if (info->size == f_h)
-    s = rz_ltoa((short)arg);
+    rz_ltoa(buf, (short)arg);
   else
-    s = rz_ltoa(arg);
+    rz_ltoa(buf, arg);
   info->is_negative = arg < 0;
-  print_arg(info, s);
-  free(s);
+  print_arg(info, buf);
 }
 
 static void print_char(struct arg_info *info, char ch)
@@ -334,23 +333,22 @@ static void print_char(struct arg_info *info, char ch)
 
 static void print_ulong_arg(struct arg_info *info, unsigned long arg)
 {
-  char *s;
+  char buf[21];
 
   info->is_negative = 0;
   if (info->core == f_c)
     print_char(info, arg);
   else if (info->core == f_s)
-      print_arg(info, (const char *)arg);
+    print_arg(info, (const char *)arg);
   else
     {
       if (info->size == f_hh)
-	s = rz_ultoa((unsigned char)arg, info->core);
+	rz_ultoa(buf, (unsigned char)arg, info->core);
       else if (info->size == f_h)
-	s = rz_ultoa((unsigned short)arg, info->core);
+	rz_ultoa(buf, (unsigned short)arg, info->core);
       else
-	s = rz_ultoa(arg, info->core);
-      print_arg(info, s);
-      free(s);
+	rz_ultoa(buf, arg, info->core);
+      print_arg(info, buf);
     }
 }
 

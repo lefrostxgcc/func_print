@@ -23,11 +23,7 @@ struct arg_info
   int total_len;
 };
 
-char *rz_ltoa(long number);
-char *rz_ultoa(unsigned long number, enum flag_type flag);
-char *rz_otoa(unsigned long number);
-char *rz_xtoa(unsigned long number);
-char *rz_Xtoa(unsigned long number);
-char *rz_ptoa(unsigned long number);
+void rz_ltoa(char *res, long number);
+void rz_ultoa(char *res, unsigned long number, enum flag_type flag);
 
 #endif

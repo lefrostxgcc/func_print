@@ -32,16 +32,13 @@ static int count(unsigned long n, unsigned size)
   return (i);
 }
 
-char *rz_ultoa(unsigned long n, enum flag_type flag)
+void rz_ultoa(char *res, unsigned long n, enum flag_type flag)
 {
-  char *res;
   int len;
   unsigned size;
 
   size = flag_size(flag);
   len = count(n, size);
-  if (!(res = malloc(sizeof(char) * len + 1)))
-    return (NULL);
   res += len;
   *res-- = '\0';
   while (--len)
@@ -50,5 +47,4 @@ char *rz_ultoa(unsigned long n, enum flag_type flag)
       n = n / size;
     }
   *res = digit_char(n % size, flag);
-  return (res);
 }

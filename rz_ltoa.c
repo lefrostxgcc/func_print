@@ -20,19 +20,20 @@ static int count(long n)
   return (i);
 }
 
-char *rz_ltoa(long n)
+void rz_ltoa(char *res, long n)
 {
-  char *res;
   int len;
   int sign;
 
   if (n == (long) 9223372036854775808UL)
-    return (ft_strdup("-9223372036854775808"));
+    {
+      res[0] = '\0';
+      ft_strcpy(res, "-9223372036854775808");
+      return;
+    }
   len = count(n);
   if ((sign = n < 0 ? 1 : 0))
     n = -n;
-  if (!(res = malloc(sizeof(char) * len + 1)))
-    return (NULL);
   res += len;
   *res-- = '\0';
   while (--len)
@@ -44,5 +45,4 @@ char *rz_ltoa(long n)
     *res = '-';
   else
     *res = n + '0';
-  return (res);
 }
