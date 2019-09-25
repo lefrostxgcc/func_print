@@ -65,6 +65,8 @@ static int read_number(const char **s)
   while (ft_isdigit(*end))
     end++;
   *s = end;
+  if (start == end)
+    return -1;
   while (start < end)
     {
       number = number * 10 + (*start - '0');
@@ -80,10 +82,13 @@ static int parse_arg_width(const char **s)
 
 static int parse_arg_precision(const char **s)
 {
+  int precision;
+  
   if (**s != '.')
     return -1;
   (*s)++;
-  return read_number(s);
+  precision = read_number(s);
+  return precision == -1 ? 0 : precision;
 }
 
 static int parse_arg_minus(const char **s)
@@ -177,94 +182,153 @@ static void parse_fmt(struct arg_info *info, const char **p)
     }
 }
 
+static void flush_buf(struct arg_info *info)
+{
+  info->total_len += rz_write(0, info->buf, info->pos);
+  info->pos = 0;
+}
+
+static void fill_buf(struct arg_info *info, char ch, int count)
+{
+  int b_left;
+
+  while (count > 0)
+    {
+      b_left = (sizeof (info->buf)) - info->pos;
+      if (count > b_left)
+	{
+	  count -= b_left;
+	  ft_memset(info->buf + info->pos, ch, b_left);
+	  flush_buf(info);
+	}
+      else
+	{
+	  ft_memset(info->buf + info->pos, ch, count);
+	  info->pos += count;
+	  count = 0;
+	}
+    }
+}
+
+static void print_to_buf(struct arg_info *info, const char *s, int s_len)
+{
+  int s_pos;
+  int b_left;
+  int s_left;
+
+  s_pos = 0;
+  while (s_pos < s_len)
+    {
+      b_left = (sizeof (info->buf)) - info->pos;
+      s_left = s_len - s_pos;
+      if (s_left > b_left)
+	{
+	  s_left -= b_left;
+	  ft_memcpy(info->buf + info->pos, s + s_pos, b_left);
+	  flush_buf(info);
+	  s_pos += b_left;
+	}
+      else
+	{
+	  ft_memcpy(info->buf + info->pos, s + s_pos, s_left);
+	  info->pos += s_left;
+	  s_pos += s_left;
+	}
+    }
+}
+
+static void print_pad(struct arg_info *info, const char *arg)
+{
+  char ch;
+  int count;
+  int len;
+  int width;
+  int total;
+  int precision;
+
+  ch = (!info->has_minus && info->has_zero) ? '0' : ' ';
+  len = ft_strlen(arg);
+  if (is_signed_core_flag(info->core) && *arg == '-')
+    --len;
+  precision = info->precision;
+  if (precision < 0)
+      precision = len;
+  if (info->core == f_s)
+      total = precision < len ? precision : len;
+  else
+      total = precision > len ? precision : len;
+  if (is_signed_core_flag(info->core) && (*arg == '-' || info->has_plus))
+    total++;
+  if (info->core == f_p || (info->has_pound && (info->core == f_x || info->core == f_X)))
+    total += 2;
+  else if (info->core == f_o && info->has_pound)
+    total++;
+  width = info->width;
+  if (width < 0)
+    width = total;
+  count = (width > total) ? width - total : 0;
+  if (is_signed_core_flag(info->core) && *arg == '-' && ch == '0')
+      print_to_buf(info, "-", 1);
+  fill_buf(info, ch, count);
+}
+
+static void print_prefix_arg(struct arg_info *info, const char *arg)
+{
+  if (is_signed_core_flag(info->core) && !info->has_zero)
+    {
+      if (*arg == '-')
+	print_to_buf(info, "-", 1);
+      else if (info->has_plus)
+	print_to_buf(info, "+", 1);
+    }
+  if (info->core == f_p || (info->has_pound && (info->core == f_x || info->core == f_X)))
+    print_to_buf(info, info->core != f_X ? "0x" : "0X", 2);
+  else if (info->has_pound && info->core == f_o)
+    print_to_buf(info, "0", 1);
+}
+
+static void print_core_arg(struct arg_info *info, const char *arg)
+{
+  int len;
+  int total;
+  int precision;
+
+  total = len = ft_strlen(arg);
+  precision = info->precision;
+  if (precision < 0)
+    {
+      if (is_signed_core_flag(info->core) && *arg == '-')
+	precision = len - 1;
+      else
+	precision = len;
+    }
+  if (info->core == f_s && precision < len)
+    total = precision;
+  else if (is_number_core_flag(info->core))
+    {
+      if (*arg == '-')
+	{
+	  arg++;
+	  len--;
+	}
+      if (info->precision > len)
+	fill_buf(info, '0', info->precision - len);
+      total = len;
+    }
+  print_to_buf(info, arg, total);
+}
+
 static void print_arg(struct arg_info *info, const char *arg)
 {
-  char *s;
-  int len;
-
   if (*arg == '\0')
     return;
-  len = ft_strlen(arg);
-  if (info->core == f_s && info->precision < len && info->precision != -1)
-    {
-      info->total_len += rz_write(0, arg, info->precision);
-    }
-  else if (is_number_core_flag(info->core) && info->precision > len)
-    {
-      if (info->core == f_p)
-	{
-	  s = (char *) malloc(sizeof (char) * (info->precision + 3));
-	  ft_memset(s, '0', info->precision + 3);
-	  s[0] = '0';
-	  s[1] = 'x';
-	  ft_strcpy(s + 2 + (info->precision - len + 2), arg + 2);
-	  info->total_len += rz_write(0, s, info->precision + 2);
-	}
-      else if (*arg == '-')
-	{
-	  s = (char *) malloc(sizeof (char) * (info->precision + 2));
-	  ft_memset(s, '0', info->precision + 1);
-	  s[0] = '-';
-	  ft_strcpy(s + (info->precision - len + 1) + 1, arg + 1);
-	  info->total_len += rz_write(0, s, info->precision + 1);
-	}
-      else
-	{
-	  s = (char *) malloc(sizeof (char) * (info->precision + 1));
-	  ft_memset(s, '0', info->precision);
-	  ft_strcpy(s + (info->precision - len), arg);
-	  info->total_len += rz_write(0, s, info->precision);
-	}
-      free(s);
-    }
-  else if (info->width > len)
-    {
-      if (info->has_zero && is_signed_core_flag(info->core) && *arg == '-')
-	{
-	  s = (char *) malloc(sizeof (char) * (info->width + 2));
-	  ft_memset(s, '0', info->width);
-	}
-      else if (info->has_zero && is_signed_core_flag(info->core) && *arg != '-')
-	{
-	  s = (char *) malloc(sizeof (char) * (info->width + 1));
-	  ft_memset(s, '0', info->width);
-	}
-      else if (info->has_zero && is_unsigned_core_flag(info->core))
-	{
-	  s = (char *) malloc(sizeof (char) * (info->width + 1));
-	  ft_memset(s, '0', info->width);
-	}
-      else
-	{
-	  s = (char *) malloc(sizeof (char) * (info->width + 1));
-	  ft_memset(s, ' ', info->width);
-	}
-      if (info->has_plus && is_signed_core_flag(info->core) && *arg != '-')
-	s[info->width - len - 1] = '+';
-      if (info->has_zero && is_signed_core_flag(info->core) && *arg == '-')
-	{
-	  s[0] = '-';
-	  ft_strcpy(s + info->width - len + 1, arg + 1);
-	}
-      else if (info->has_minus)
-	ft_memcpy(s, arg, len);
-      else
-	ft_strcpy(s + (info->width - len), arg);
-      info->total_len += rz_write(0, s, info->width);
-      free(s);
-    }
-  else
-    {
-      if (info->has_plus && is_signed_core_flag(info->core) && *arg != '-')
-	info->total_len += rz_write(0, "+", 1);
-      if (info->has_pound && info->core == f_o)
-	info->total_len += rz_write(0, "0", 1);
-      if (info->has_pound && info->core == f_x)
-	info->total_len += rz_write(0, "0x", 2);
-      if (info->has_pound && info->core == f_X)
-	info->total_len += rz_write(0, "0X", 2);
-      info->total_len += rz_write(0, arg, len);
-    }
+  if (!info->has_minus)
+    print_pad(info, arg);
+  print_prefix_arg(info, arg);
+  print_core_arg(info, arg);
+  if (info->has_minus)
+    print_pad(info, arg);
+  flush_buf(info);
 }
 
 static void print_long_arg(struct arg_info *info, long arg)
@@ -334,7 +398,8 @@ int ft_printf(const char *f, ...)
 
   if (!f)
     return -1;
-  info.total_len = 0;
+  ft_memset(info.buf, '\0', 1024);
+  info.pos = info.total_len = 0;
   va_start(ap, f);
   while (*f != '\0')
     {

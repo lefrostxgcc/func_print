@@ -6,6 +6,8 @@ enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X, f_percent,
 		f_hh, f_h, f_l, f_ll};
 struct arg_info
 {
+  char buf[1024];
+  int pos;
   enum va_conv_type va_conv;
   enum flag_type size;
   enum flag_type core;

@@ -39,15 +39,9 @@ char *rz_ultoa(unsigned long n, enum flag_type flag)
   unsigned size;
 
   size = flag_size(flag);
-  len = flag == f_p ? 12 : count(n, size);
-  if (!(res = malloc(sizeof(char) * len + (flag == f_p ? 3 : 1))))
+  len = count(n, size);
+  if (!(res = malloc(sizeof(char) * len + 1)))
     return (NULL);
-  if (flag == f_p)
-    {
-      ft_memset(res, '0', len);
-      res[1] = 'x';
-      res += 2;
-    }
   res += len;
   *res-- = '\0';
   while (--len)
@@ -56,7 +50,5 @@ char *rz_ultoa(unsigned long n, enum flag_type flag)
       n = n / size;
     }
   *res = digit_char(n % size, flag);
-  if (flag == f_p)
-    res -= 2;
   return (res);
 }
