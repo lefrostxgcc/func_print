@@ -41,7 +41,7 @@ START_TEST(test_single_format_param_empty)
   const char *format = "";
   int actual_result = ft_printf(format);
   ck_assert_int_eq(actual_result, 0);
-  ck_assert_pstr_eq(get_write_buf(), NULL);
+  ck_assert_pstr_eq(get_write_buf(), "");
 }
 END_TEST
 
@@ -77,7 +77,7 @@ START_TEST(test_single_param_cstring_empty)
   const char *a = "";
   int actual_result = ft_printf(format, a);
   ck_assert_int_eq(actual_result, 0);
-  ck_assert_pstr_eq(get_write_buf(), NULL);
+  ck_assert_pstr_eq(get_write_buf(), "");
 }
 END_TEST
 

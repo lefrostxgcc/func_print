@@ -15,9 +15,11 @@ struct arg_info
   int has_plus;
   int has_pound;
   int has_zero;
+  int is_negative;
   int width;
   int precision;
   int fmt_len;
+  int arg_len;
   int total_len;
 };
 

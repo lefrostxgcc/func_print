@@ -237,51 +237,39 @@ static void print_to_buf(struct arg_info *info, const char *s, int s_len)
     }
 }
 
-static void print_pad(struct arg_info *info, const char *arg)
+static void print_pad(struct arg_info *info)
 {
   char ch;
-  int count;
-  int len;
-  int width;
   int total;
-  int precision;
 
   ch = (!info->has_minus && info->has_zero) ? '0' : ' ';
-  len = ft_strlen(arg);
-  if (is_signed_core_flag(info->core) && *arg == '-')
-    --len;
-  precision = info->precision;
-  if (precision < 0)
-      precision = len;
-  if (info->core == f_s)
-      total = precision < len ? precision : len;
-  else
-      total = precision > len ? precision : len;
-  if (is_signed_core_flag(info->core) && (*arg == '-' || info->has_plus))
+  total = info->arg_len;
+  if (info->precision >= 0 && info->core == f_s && info->precision < info->arg_len)
+    total = info->precision;
+  if (info->is_negative || (info->has_plus && is_signed_core_flag(info->core)))
     total++;
-  if (info->core == f_p || (info->has_pound && (info->core == f_x || info->core == f_X)))
+  if (info->core == f_p ||
+      (info->has_pound && (info->core == f_x || info->core == f_X)))
     total += 2;
   else if (info->core == f_o && info->has_pound)
     total++;
-  width = info->width;
-  if (width < 0)
-    width = total;
-  count = (width > total) ? width - total : 0;
-  if (is_signed_core_flag(info->core) && *arg == '-' && ch == '0')
+  if (info->is_negative && ch == '0')
       print_to_buf(info, "-", 1);
-  fill_buf(info, ch, count);
+  if (info->width > total)
+    fill_buf(info, ch, info->width - total);
 }
 
-static void print_prefix_arg(struct arg_info *info, const char *arg)
+static void print_prefix_arg(struct arg_info *info)
 {
   if (is_signed_core_flag(info->core) && !info->has_zero)
     {
-      if (*arg == '-')
+      if (info->is_negative)
 	print_to_buf(info, "-", 1);
       else if (info->has_plus)
 	print_to_buf(info, "+", 1);
     }
-  if (info->core == f_p || (info->has_pound && (info->core == f_x || info->core == f_X)))
+  if (info->core == f_p ||
+      (info->has_pound && (info->core == f_x || info->core == f_X)))
     print_to_buf(info, info->core != f_X ? "0x" : "0X", 2);
   else if (info->has_pound && info->core == f_o)
     print_to_buf(info, "0", 1);
@@ -289,31 +277,17 @@ static void print_prefix_arg(struct arg_info *info, const char *arg)
 
 static void print_core_arg(struct arg_info *info, const char *arg)
 {
-  int len;
   int total;
-  int precision;
 
-  total = len = ft_strlen(arg);
-  precision = info->precision;
-  if (precision < 0)
-    {
-      if (is_signed_core_flag(info->core) && *arg == '-')
-	precision = len - 1;
-      else
-	precision = len;
-    }
-  if (info->core == f_s && precision < len)
-    total = precision;
+  total = info->arg_len;
+  if (info->core == f_s && info->precision >= 0 && info->precision < info->arg_len)
+    total = info->precision;
   else if (is_number_core_flag(info->core))
     {
-      if (*arg == '-')
-	{
-	  arg++;
-	  len--;
-	}
-      if (info->precision > len)
-	fill_buf(info, '0', info->precision - len);
-      total = len;
+      if (info->is_negative)
+	arg++;
+      if (info->precision > info->arg_len)
+	fill_buf(info, '0', info->precision - info->arg_len);
     }
   print_to_buf(info, arg, total);
 }
@@ -322,13 +296,15 @@ static void print_arg(struct arg_info *info, const char *arg)
 {
   if (*arg == '\0')
     return;
+  info->arg_len = ft_strlen(arg);
+  if (info->is_negative)
+    info->arg_len--;
   if (!info->has_minus)
-    print_pad(info, arg);
-  print_prefix_arg(info, arg);
+    print_pad(info);
+  print_prefix_arg(info);
   print_core_arg(info, arg);
   if (info->has_minus)
-    print_pad(info, arg);
-  flush_buf(info);
+    print_pad(info);
 }
 
 static void print_long_arg(struct arg_info *info, long arg)
@@ -341,6 +317,7 @@ static void print_long_arg(struct arg_info *info, long arg)
     s = rz_ltoa((short)arg);
   else
     s = rz_ltoa(arg);
+  info->is_negative = arg < 0;
   print_arg(info, s);
   free(s);
 }
@@ -351,6 +328,7 @@ static void print_char(struct arg_info *info, char ch)
 
   buf[0] = ch;
   buf[1] = '\0';
+  info->is_negative = 0;
   print_arg(info, buf);
 }
 
@@ -358,10 +336,11 @@ static void print_ulong_arg(struct arg_info *info, unsigned long arg)
 {
   char *s;
 
+  info->is_negative = 0;
   if (info->core == f_c)
     print_char(info, arg);
   else if (info->core == f_s)
-    print_arg(info, (const char *)arg);
+      print_arg(info, (const char *)arg);
   else
     {
       if (info->size == f_hh)
@@ -381,12 +360,12 @@ static void print_fmt(struct arg_info *info, const char **s)
 
   p = *s;
   if (info->va_conv == va_percent)
-    print_char(info, '%');
+    print_to_buf(info, "%", 1);
   else
     {
       while (*p && *p != '%')
 	p++;
-      info->total_len += rz_write(0, *s, p - *s);
+      print_to_buf(info, *s, p - *s);
     }
   *s = p;
 }
@@ -398,7 +377,6 @@ int ft_printf(const char *f, ...)
 
   if (!f)
     return -1;
-  ft_memset(info.buf, '\0', 1024);
   info.pos = info.total_len = 0;
   va_start(ap, f);
   while (*f != '\0')
@@ -415,6 +393,7 @@ int ft_printf(const char *f, ...)
       else if (info.va_conv == va_ul)
 	print_ulong_arg(&info, va_arg(ap, unsigned long));
     }
+  flush_buf(&info);
   va_end(ap);
   return info.total_len;
 }
