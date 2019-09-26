@@ -2055,6 +2055,18 @@ START_TEST(test_float_small_precision)
 }
 END_TEST
 
+START_TEST(test_float_big_precision)
+{
+  char buffer[128];
+  const char *format = "[%.7f]";
+  double a = -1.2345;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2307,6 +2319,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_float, test_float_small);
   tcase_add_test(tc_float, test_float_small_negative);
   tcase_add_test(tc_float, test_float_small_precision);
+  tcase_add_test(tc_float, test_float_big_precision);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);

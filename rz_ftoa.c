@@ -4,9 +4,9 @@
 
 void rz_ftoa(struct arg_info *info, double arg, long *intp, unsigned long *fracp)
 {
-  int precision;
-  int i;
-  int v;
+  long precision;
+  long i;
+  long v;
 
   *intp = (long) arg;
   arg -= *intp;
@@ -24,6 +24,5 @@ void rz_ftoa(struct arg_info *info, double arg, long *intp, unsigned long *fracp
     }
   arg *= v;
   arg += 1.0 / v;
-  info->precision = -1;
   *fracp = arg;
 }
