@@ -1986,8 +1986,20 @@ END_TEST
 START_TEST(test_zero_X_width_greater)
 {
   char buffer[128];
-  const char *format = "[%06X]";
-  unsigned a = 0xabc;
+  const char *format = "[%07X]";
+  unsigned a = 0x123b;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
+START_TEST(test_float_small_int)
+{
+  char buffer[128];
+  const char *format = "[%f]";
+  float a = 123.0;
   int actual_result = ft_printf(format, a);
   int expected_result = snprintf(buffer, sizeof buffer, format, a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
@@ -2006,6 +2018,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_plus;
   TCase *tc_pound;
   TCase *tc_zero;
+  TCase *tc_float;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -2224,19 +2237,24 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_pound, test_pound_X);
 
   tc_zero = tcase_create("Zero");
-  tcase_add_checked_fixture(tc_pound, setup_ft_printf, teardown_ft_printf);
-  tcase_add_test(tc_pound, test_zero_d);
-  tcase_add_test(tc_pound, test_zero_i);
-  tcase_add_test(tc_pound, test_zero_u);
-  tcase_add_test(tc_pound, test_zero_o);
-  tcase_add_test(tc_pound, test_zero_x);
-  tcase_add_test(tc_pound, test_zero_X);
-  tcase_add_test(tc_pound, test_zero_d_width_greater);
-  tcase_add_test(tc_pound, test_zero_i_width_greater);
-  tcase_add_test(tc_pound, test_zero_u_width_greater);
-  tcase_add_test(tc_pound, test_zero_o_width_greater);
-  tcase_add_test(tc_pound, test_zero_x_width_greater);
-  tcase_add_test(tc_pound, test_zero_X_width_greater);
+  tcase_add_checked_fixture(tc_zero, setup_ft_printf, teardown_ft_printf);
+
+  tcase_add_test(tc_zero, test_zero_d);
+  tcase_add_test(tc_zero, test_zero_i);
+  tcase_add_test(tc_zero, test_zero_u);
+  tcase_add_test(tc_zero, test_zero_o);
+  tcase_add_test(tc_zero, test_zero_x);
+  tcase_add_test(tc_zero, test_zero_X);
+  tcase_add_test(tc_zero, test_zero_d_width_greater);
+  tcase_add_test(tc_zero, test_zero_i_width_greater);
+  tcase_add_test(tc_zero, test_zero_u_width_greater);
+  tcase_add_test(tc_zero, test_zero_o_width_greater);
+  tcase_add_test(tc_zero, test_zero_x_width_greater);
+  tcase_add_test(tc_zero, test_zero_X_width_greater);
+
+  tc_float = tcase_create("Float");
+  tcase_add_checked_fixture(tc_float, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_float, test_float_small_int);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -2246,6 +2264,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_plus);
   suite_add_tcase(s, tc_pound);
   suite_add_tcase(s, tc_zero);
+  suite_add_tcase(s, tc_float);
 
   return s;
 }

@@ -1,9 +1,9 @@
 #ifndef RZ_NUMTOSTR_H
 # define RZ_NUMTOSTR_H
 
-enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul};
+enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul, va_double};
 enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X, f_percent,
-		f_hh, f_h, f_l, f_ll};
+		f_f, f_hh, f_h, f_l, f_ll};
 struct arg_info
 {
   char buf[1024];
@@ -25,5 +25,6 @@ struct arg_info
 
 void rz_ltoa(char *res, long number);
 void rz_ultoa(char *res, unsigned long number, enum flag_type flag);
+void rz_ftoa(struct arg_info *info, double arg, long *, unsigned long *);
 
 #endif

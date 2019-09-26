@@ -5,7 +5,7 @@
 
 static int is_signed_core_flag(enum flag_type f)
 {
-  return f == f_d || f == f_i || f == f_p;
+  return f == f_d || f == f_i || f == f_p || f == f_f;
 }
 
 static int is_unsigned_core_flag(enum flag_type f)
@@ -33,6 +33,8 @@ static enum va_conv_type select_va_conv_type(const struct arg_info *info)
     return va_ul;
   else if (info->core == f_percent)
     return va_percent;
+  else if (info->core == f_f)
+    return va_double;
   return va_i;
 }
 
@@ -155,6 +157,8 @@ static enum flag_type parse_arg_core(const char *p)
     return f_X;
   else if (*p == '%')
     return f_percent;
+  else if (*p == 'f')
+    return f_f;
   return f_d;
 }
 
@@ -321,6 +325,30 @@ static void print_long_arg(struct arg_info *info, long arg)
   print_arg(info, buf);
 }
 
+static void print_double_arg(struct arg_info *info, double arg)
+{
+  char buf[21];
+  long intp;
+  unsigned long fracp;
+  int pre;
+
+  pre = info->precision;
+  if (pre < 0)
+    pre = 6;
+  buf[0] = '\0';
+  rz_ftoa(info, arg, &intp, &fracp);
+  rz_ltoa(buf, intp);
+  info->is_negative = arg < 0;
+  info->precision = -1;
+  print_arg(info, buf);
+  print_to_buf(info, ".", 1);
+  buf[0] = '\0';
+  rz_ultoa(buf, fracp, info->core);
+  info->is_negative = 0;
+  info->precision = pre;
+  print_arg(info, buf);
+}
+
 static void print_char(struct arg_info *info, char ch)
 {
   char buf[2];
@@ -390,6 +418,8 @@ int ft_printf(const char *f, ...)
 	print_long_arg(&info, va_arg(ap, long));
       else if (info.va_conv == va_ul)
 	print_ulong_arg(&info, va_arg(ap, unsigned long));
+      else if (info.va_conv == va_double)
+	print_double_arg(&info, va_arg(ap, double));
     }
   flush_buf(&info);
   va_end(ap);
