@@ -186,35 +186,35 @@ static void parse_fmt(struct arg_info *info, const char **p)
     }
 }
 
-static void flush_buf(struct arg_info *info)
+static void flush_buf(struct rz_buffer *buf)
 {
-  info->total_len += rz_write(0, info->buf, info->pos);
-  info->pos = 0;
+  buf->total += rz_write(0, buf->data, buf->pos);
+  buf->pos = 0;
 }
 
-static void fill_buf(struct arg_info *info, char ch, int count)
+static void fill_buf(struct rz_buffer *buf, char ch, int count)
 {
   int b_left;
 
   while (count > 0)
     {
-      b_left = (sizeof (info->buf)) - info->pos;
+      b_left = (sizeof (buf->data)) - buf->pos;
       if (count > b_left)
 	{
 	  count -= b_left;
-	  ft_memset(info->buf + info->pos, ch, b_left);
-	  flush_buf(info);
+	  ft_memset(buf->data + buf->pos, ch, b_left);
+	  flush_buf(buf);
 	}
       else
 	{
-	  ft_memset(info->buf + info->pos, ch, count);
-	  info->pos += count;
+	  ft_memset(buf->data + buf->pos, ch, count);
+	  buf->pos += count;
 	  count = 0;
 	}
     }
 }
 
-static void print_to_buf(struct arg_info *info, const char *s, int s_len)
+static void print_to_buf(struct rz_buffer *buf, const char *s, int s_len)
 {
   int s_pos;
   int b_left;
@@ -223,25 +223,25 @@ static void print_to_buf(struct arg_info *info, const char *s, int s_len)
   s_pos = 0;
   while (s_pos < s_len)
     {
-      b_left = (sizeof (info->buf)) - info->pos;
+      b_left = (sizeof (buf->data)) - buf->pos;
       s_left = s_len - s_pos;
       if (s_left > b_left)
 	{
 	  s_left -= b_left;
-	  ft_memcpy(info->buf + info->pos, s + s_pos, b_left);
-	  flush_buf(info);
+	  ft_memcpy(buf->data + buf->pos, s + s_pos, b_left);
+	  flush_buf(buf);
 	  s_pos += b_left;
 	}
       else
 	{
-	  ft_memcpy(info->buf + info->pos, s + s_pos, s_left);
-	  info->pos += s_left;
+	  ft_memcpy(buf->data + buf->pos, s + s_pos, s_left);
+	  buf->pos += s_left;
 	  s_pos += s_left;
 	}
     }
 }
 
-static void print_pad(struct arg_info *info)
+static void print_pad(struct rz_buffer *buf, struct arg_info *info)
 {
   char ch;
   int total;
@@ -258,28 +258,28 @@ static void print_pad(struct arg_info *info)
   else if (info->core == f_o && info->has_pound)
     total++;
   if (info->is_negative && ch == '0')
-      print_to_buf(info, "-", 1);
+    print_to_buf(buf, "-", 1);
   if (info->width > total)
-    fill_buf(info, ch, info->width - total);
+    fill_buf(buf, ch, info->width - total);
 }
 
-static void print_prefix_arg(struct arg_info *info)
+static void print_prefix_arg(struct rz_buffer *buf, struct arg_info *info)
 {
   if (is_signed_core_flag(info->core) && !info->has_zero)
     {
       if (info->is_negative)
-	print_to_buf(info, "-", 1);
+	print_to_buf(buf, "-", 1);
       else if (info->has_plus)
-	print_to_buf(info, "+", 1);
+	print_to_buf(buf, "+", 1);
     }
   if (info->core == f_p ||
       (info->has_pound && (info->core == f_x || info->core == f_X)))
-    print_to_buf(info, info->core != f_X ? "0x" : "0X", 2);
+    print_to_buf(buf, info->core != f_X ? "0x" : "0X", 2);
   else if (info->has_pound && info->core == f_o)
-    print_to_buf(info, "0", 1);
+    print_to_buf(buf, "0", 1);
 }
 
-static void print_core_arg(struct arg_info *info, const char *arg)
+static void print_core_arg(struct rz_buffer *buf, struct arg_info *info, const char *arg)
 {
   int total;
 
@@ -291,12 +291,12 @@ static void print_core_arg(struct arg_info *info, const char *arg)
       if (info->is_negative)
 	arg++;
       if (info->precision > info->arg_len)
-	fill_buf(info, '0', info->precision - info->arg_len);
+	fill_buf(buf, '0', info->precision - info->arg_len);
     }
-  print_to_buf(info, arg, total);
+  print_to_buf(buf, arg, total);
 }
 
-static void print_arg(struct arg_info *info, const char *arg)
+static void print_arg(struct rz_buffer *buf, struct arg_info *info, const char *arg)
 {
   if (*arg == '\0')
     return;
@@ -304,112 +304,120 @@ static void print_arg(struct arg_info *info, const char *arg)
   if (info->is_negative)
     info->arg_len--;
   if (!info->has_minus)
-    print_pad(info);
-  print_prefix_arg(info);
-  print_core_arg(info, arg);
+    print_pad(buf, info);
+  print_prefix_arg(buf, info);
+  print_core_arg(buf, info, arg);
   if (info->has_minus)
-    print_pad(info);
+    print_pad(buf, info);
 }
 
-static void print_long_arg(struct arg_info *info, long arg)
+static void print_long_arg(struct rz_buffer *buf, struct arg_info *info, long arg)
 {
-  char buf[21];
+  char str[21];
   
   if (info->size == f_hh)
-    rz_ltoa(buf, (signed char)arg);
+    rz_ltoa(str, (signed char)arg);
   else if (info->size == f_h)
-    rz_ltoa(buf, (short)arg);
+    rz_ltoa(str, (short)arg);
   else
-    rz_ltoa(buf, arg);
+    rz_ltoa(str, arg);
   info->is_negative = arg < 0;
-  print_arg(info, buf);
+  print_arg(buf, info, str);
 }
 
-static void print_double_arg(struct arg_info *info, double arg)
+static void print_double_arg(struct rz_buffer *buf, struct arg_info *info, double arg)
 {
-  char buf[42];
+  char str[42];
 
   if (info->precision < 0)
     info->precision = 6;
-  rz_ftoa(buf, info, arg);
+  rz_ftoa(str, info, arg);
   info->is_negative = arg < 0;
   info->precision = -1;
-  print_arg(info, buf);
+  print_arg(buf, info, str);
 }
 
-static void print_char(struct arg_info *info, char ch)
+static void print_char(struct rz_buffer *buf, struct arg_info *info, char ch)
 {
-  char buf[2];
+  char str[2];
 
-  buf[0] = ch;
-  buf[1] = '\0';
+  str[0] = ch;
+  str[1] = '\0';
   info->is_negative = 0;
-  print_arg(info, buf);
+  print_arg(buf, info, str);
 }
 
-static void print_ulong_arg(struct arg_info *info, unsigned long arg)
+static void print_ulong_arg(struct rz_buffer *buf, struct arg_info *info, unsigned long arg)
 {
-  char buf[21];
+  char str[21];
 
   info->is_negative = 0;
   if (info->core == f_c)
-    print_char(info, arg);
+    print_char(buf, info, arg);
   else if (info->core == f_s)
-    print_arg(info, (const char *)arg);
+    print_arg(buf, info, (const char *)arg);
   else
     {
       if (info->size == f_hh)
-	rz_ultoa(buf, (unsigned char)arg, info->core);
+	rz_ultoa(str, (unsigned char)arg, info->core);
       else if (info->size == f_h)
-	rz_ultoa(buf, (unsigned short)arg, info->core);
+	rz_ultoa(str, (unsigned short)arg, info->core);
       else
-	rz_ultoa(buf, arg, info->core);
-      print_arg(info, buf);
+	rz_ultoa(str, arg, info->core);
+      print_arg(buf, info, str);
     }
 }
 
-static void print_fmt(struct arg_info *info, const char **s)
+static void print_fmt(struct rz_buffer *buf, struct arg_info *info, const char **s)
 {
   const char *p;
 
   p = *s;
   if (info->va_conv == va_percent)
-    print_to_buf(info, "%", 1);
+    print_to_buf(buf, "%", 1);
   else
     {
       while (*p && *p != '%')
 	p++;
-      print_to_buf(info, *s, p - *s);
+      print_to_buf(buf, *s, p - *s);
     }
   *s = p;
 }
 
-int ft_printf(const char *f, ...)
+static void ft_printf_impl(struct rz_buffer *buf, const char *f, va_list ap)
 {
   struct arg_info info;
-  va_list ap;
 
-  if (!f)
-    return -1;
-  info.pos = info.total_len = 0;
-  va_start(ap, f);
+  ft_memset(&info, '\0', sizeof(info));
   while (*f != '\0')
     {
       parse_fmt(&info, &f);
       if (info.va_conv == va_none || info.va_conv == va_percent)
-	print_fmt(&info, &f);
+	print_fmt(buf, &info, &f);
       else if (info.va_conv == va_i)
-	print_long_arg(&info, va_arg(ap, int));
+	print_long_arg(buf, &info, va_arg(ap, int));
       else if (info.va_conv == va_u)
-	print_ulong_arg(&info, va_arg(ap, unsigned int));
+	print_ulong_arg(buf, &info, va_arg(ap, unsigned int));
       else if (info.va_conv == va_l)
-	print_long_arg(&info, va_arg(ap, long));
+	print_long_arg(buf, &info, va_arg(ap, long));
       else if (info.va_conv == va_ul)
-	print_ulong_arg(&info, va_arg(ap, unsigned long));
+	print_ulong_arg(buf, &info, va_arg(ap, unsigned long));
       else if (info.va_conv == va_double)
-	print_double_arg(&info, va_arg(ap, double));
+	print_double_arg(buf, &info, va_arg(ap, double));
     }
-  flush_buf(&info);
+}
+
+int ft_printf(const char *f, ...)
+{
+  struct rz_buffer buf;
+  va_list ap;
+
+  if (!f)
+    return (-1);
+  buf.pos = buf.total = 0;
+  va_start(ap, f);
+  ft_printf_impl(&buf, f, ap);
+  flush_buf(&buf);
   va_end(ap);
-  return info.total_len;
+  return (buf.total);
 }
