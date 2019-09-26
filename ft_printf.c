@@ -332,6 +332,7 @@ static void print_double_arg(struct arg_info *info, double arg)
   unsigned long fracp;
   int pre;
   int len1;
+  int w;
 
   pre = info->precision;
   if (pre < 0)
@@ -340,8 +341,14 @@ static void print_double_arg(struct arg_info *info, double arg)
   rz_ftoa(info, arg, &intp, &fracp);
   rz_ltoa(buf, intp);
   len1 = ft_strlen(buf);
+  w = info->width;
   if (info->width > len1 + 1 + pre)
-    info->width = info->width - (1 + pre);
+    {
+      if (info->has_minus)
+	info->width = -1;
+      else
+	info->width = info->width - (1 + pre);
+    }
   info->is_negative = arg < 0;
   info->precision = -1;
   print_arg(info, buf);
@@ -351,6 +358,8 @@ static void print_double_arg(struct arg_info *info, double arg)
   print_to_buf(info, ".", 1);
   info->is_negative = 0;
   info->precision = pre;
+  if (info->has_minus && w > 0)
+    info->width = w - (1 + len1);
   print_arg(info, buf);
 }
 
