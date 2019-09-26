@@ -1,9 +1,10 @@
 #ifndef RZ_NUMTOSTR_H
 # define RZ_NUMTOSTR_H
 
-enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul, va_double};
+enum va_conv_type {va_none, va_percent, va_i, va_u, va_l, va_ul,
+		   va_double, va_long_double};
 enum flag_type {f_c, f_s, f_p, f_d, f_i, f_u, f_o, f_x, f_X, f_percent,
-		f_f, f_hh, f_h, f_l, f_ll};
+		f_f, f_hh, f_h, f_l, f_ll, f_L};
 
 enum {BUFSIZE = 1024};
 

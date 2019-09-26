@@ -34,7 +34,7 @@ static enum va_conv_type select_va_conv_type(const struct arg_info *info)
   else if (info->core == f_percent)
     return va_percent;
   else if (info->core == f_f)
-    return va_double;
+    return (info->size == f_L) ? va_long_double : va_double;
   return va_i;
 }
 
@@ -49,7 +49,9 @@ static enum flag_type parse_arg_size(const char **s)
     t = p[1] == 'h' ? f_hh : f_h;
   else if (*p == 'l')
     t = p[1] == 'l' ? f_ll : f_l;
-  if (t == f_h || t == f_l)
+  else if (*p == 'L')
+    t = f_L;
+  if (t == f_h || t == f_l || t == f_L)
     (*s)++;
   else if (t == f_hh || t == f_ll)
     (*s) += 2;
@@ -325,13 +327,16 @@ static void print_long_arg(struct rz_buffer *buf, struct arg_info *info, long ar
   print_arg(buf, info, str);
 }
 
-static void print_double_arg(struct rz_buffer *buf, struct arg_info *info, double arg)
+static void print_long_double_arg(struct rz_buffer *buf, struct arg_info *info, long double arg)
 {
   char str[42];
 
   if (info->precision < 0)
     info->precision = 6;
-  rz_ftoa(str, info, arg);
+  if (info->size == f_L)
+    rz_ftoa(str, info, arg);
+  else
+    rz_ftoa(str, info, (double) arg);
   info->is_negative = arg < 0;
   info->precision = -1;
   print_arg(buf, info, str);
@@ -403,7 +408,9 @@ static void ft_printf_impl(struct rz_buffer *buf, const char *f, va_list ap)
       else if (info.va_conv == va_ul)
 	print_ulong_arg(buf, &info, va_arg(ap, unsigned long));
       else if (info.va_conv == va_double)
-	print_double_arg(buf, &info, va_arg(ap, double));
+	print_long_double_arg(buf, &info, va_arg(ap, double));
+      else if (info.va_conv == va_long_double)
+	print_long_double_arg(buf, &info, va_arg(ap, long double));
     }
 }
 
