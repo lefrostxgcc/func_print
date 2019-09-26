@@ -22,7 +22,7 @@ static enum va_conv_type select_va_conv_type(const struct arg_info *info)
 {
   if (info->size == f_hh || info->size == f_h)
     return (info->core == f_d || info->core == f_i) ? va_i : va_u;
-  else if (info->size == f_l || info->size == f_ll)
+  else if ((info->size == f_l || info->size == f_ll) && info->core != f_f)
     return (info->core == f_d || info->core == f_i) ? va_l : va_ul;
   else if (info->core == f_d || info->core == f_i)
     return va_i;
