@@ -25,6 +25,6 @@ struct arg_info
 
 void rz_ltoa(char *res, long number);
 void rz_ultoa(char *res, unsigned long number, enum flag_type flag);
-void rz_ftoa(struct arg_info *info, double arg, long *, unsigned long *);
+void rz_ftoa(char *res, struct arg_info *info, double arg);
 
 #endif

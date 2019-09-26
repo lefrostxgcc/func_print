@@ -327,39 +327,13 @@ static void print_long_arg(struct arg_info *info, long arg)
 
 static void print_double_arg(struct arg_info *info, double arg)
 {
-  char buf[21];
-  long intp;
-  unsigned long fracp;
-  int pre;
-  int len1;
-  int w;
+  char buf[42];
 
-  pre = info->precision;
-  if (pre < 0)
-    pre = 6;
-  buf[0] = '\0';
-  rz_ftoa(info, arg, &intp, &fracp);
-  rz_ltoa(buf, intp);
-  len1 = ft_strlen(buf);
-  w = info->width;
-  if (info->width > len1 + 1 + pre)
-    {
-      if (info->has_minus)
-	info->width = -1;
-      else
-	info->width = info->width - (1 + pre);
-    }
+  if (info->precision < 0)
+    info->precision = 6;
+  rz_ftoa(buf, info, arg);
   info->is_negative = arg < 0;
   info->precision = -1;
-  print_arg(info, buf);
-  buf[0] = '\0';
-  rz_ultoa(buf, fracp, info->core);
-  info->width = -1;
-  print_to_buf(info, ".", 1);
-  info->is_negative = 0;
-  info->precision = pre;
-  if (info->has_minus && w > 0)
-    info->width = w - (1 + len1);
   print_arg(info, buf);
 }
 
