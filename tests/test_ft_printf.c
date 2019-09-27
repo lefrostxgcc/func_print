@@ -2163,6 +2163,18 @@ START_TEST(test_space_d)
 }
 END_TEST
 
+START_TEST(test_space_i_negative)
+{
+  char buffer[128];
+  const char *format = "[% i]";
+  int a = -1234;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2428,6 +2440,7 @@ Suite *ft_printf_suite(void)
   tc_space = tcase_create("Space");
   tcase_add_checked_fixture(tc_space, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_space, test_space_d);
+  tcase_add_test(tc_space, test_space_i_negative);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
