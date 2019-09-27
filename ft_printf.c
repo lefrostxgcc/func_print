@@ -79,11 +79,6 @@ static int read_number(const char **s)
   return number;
 }
 
-static int parse_arg_width(const char **s)
-{
-  return read_number(s);
-}
-
 static int parse_arg_precision(const char **s)
 {
   int precision;
@@ -93,61 +88,6 @@ static int parse_arg_precision(const char **s)
   (*s)++;
   precision = read_number(s);
   return precision == -1 ? 0 : precision;
-}
-
-static int parse_arg_minus(const char **s)
-{
-  if (**s == '-')
-    {
-      (*s)++;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-static int parse_arg_plus(const char **s)
-{
-  if (**s == '+')
-    {
-      (*s)++;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-static int parse_arg_pound(const char **s)
-{
-  if (**s == '#')
-    {
-      (*s)++;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-static int parse_arg_zero(const char **s)
-{
-  if (**s == '0')
-    {
-      (*s)++;
-      return 1;
-    }
-  else
-    return 0;
-}
-
-static int parse_arg_space(const char **s)
-{
-  if (**s == ' ')
-    {
-      (*s)++;
-      return 1;
-    }
-  else
-    return 0;
 }
 
 static enum flag_type parse_arg_core(const char *p)
@@ -175,22 +115,39 @@ static enum flag_type parse_arg_core(const char *p)
   return f_d;
 }
 
+static void parse_flags(struct arg_info *info, const char **p)
+{
+  while (**p)
+    {
+      if (**p == '-')
+	info->has_minus = 1;
+      else if (**p == '#')
+	info->has_pound = 1;
+      else if (**p == '+')
+	info->has_plus = 1;
+      else if (**p == '0')
+	info->has_zero = 1;
+      else if (**p == ' ')
+	info->has_space = 1;
+      else
+	return;
+      (*p)++;
+    }
+}
+
 static void parse_fmt(struct arg_info *info, const char **p)
 {
   const char *base;
 
+  ft_memset(info, 0, sizeof *info);
   if (**p != '%')
     info->va_conv = va_none;
   else
     {
       (*p)++;
       base = *p;
-      info->has_minus = parse_arg_minus(p);
-      info->has_plus = parse_arg_plus(p);
-      info->has_pound = parse_arg_pound(p);
-      info->has_zero = parse_arg_zero(p);
-      info->has_space = parse_arg_space(p);
-      info->width = parse_arg_width(p);
+      parse_flags(info, p);
+      info->width = read_number(p);
       info->precision = parse_arg_precision(p);
       info->size = parse_arg_size(p);
       info->core = parse_arg_core(*p);
@@ -407,7 +364,6 @@ static void ft_printf_impl(struct rz_buffer *buf, const char *f, va_list ap)
 {
   struct arg_info info;
 
-  ft_memset(&info, '\0', sizeof(info));
   while (*f != '\0')
     {
       parse_fmt(&info, &f);
