@@ -11,6 +11,8 @@ static void extract_int_frac(long double arg, int precision, long *intp, unsigne
   arg -= *intp;
   if (arg < 0)
     arg = -arg;
+  if (precision == 0 && arg >= 0.5)
+    (*intp)++;
   i = 0;
   v = 1;
   while (i < precision)

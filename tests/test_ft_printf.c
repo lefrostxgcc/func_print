@@ -2155,7 +2155,7 @@ START_TEST(test_f_precision0)
 {
   char buffer[128];
   const char *format = "[%.f]";
-  long double a = 1.2345;
+  double a = 1.2345;
   int actual_result = ft_printf(format, a);
   int expected_result = snprintf(buffer, sizeof buffer, format, a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
@@ -2167,7 +2167,19 @@ START_TEST(test_f_precision0_negative)
 {
   char buffer[128];
   const char *format = "[%.f]";
-  long double a = -1.2345;
+  double a = -1.2345;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
+START_TEST(test_f_precision0_round)
+{
+  char buffer[128];
+  const char *format = "[%.f]";
+  double a = 1234.567;
   int actual_result = ft_printf(format, a);
   int expected_result = snprintf(buffer, sizeof buffer, format, a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
@@ -2546,6 +2558,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_float, test_Lfloat);
   tcase_add_test(tc_float, test_f_precision0);
   tcase_add_test(tc_float, test_f_precision0_negative);
+  tcase_add_test(tc_float, test_f_precision0_round);
 
   tc_space = tcase_create("Space");
   tcase_add_checked_fixture(tc_space, setup_ft_printf, teardown_ft_printf);
