@@ -24,6 +24,7 @@ struct arg_info
   int has_plus;
   int has_pound;
   int has_zero;
+  int has_space;
   int is_negative;
   int width;
   int precision;
