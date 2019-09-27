@@ -1,23 +1,52 @@
 #include <stdlib.h>
-#include "rz_numtostr.h"
+#include "rz_printf_impl.h"
 #include "libft/libft.h"
 
-static int count(long n)
+static unsigned flag_base(enum flag_type flag)
+{
+  if (flag == f_o)
+    return 8;
+  else if (flag == f_x || flag == f_X || flag == f_p)
+    return 16;
+  return 10;
+}
+
+static char digit_char(unsigned long n, enum flag_type type)
+{
+  if (n < 10)
+    return n + '0';
+  else
+    return n - 10 + (type == f_X ? 'A' : 'a');
+}
+
+static int digit_count(unsigned long n, unsigned base)
 {
   int i;
 
   i = 1;
-  if (n < 0)
+  while (n > base - 1)
     {
-      n = -n;
-      i++;
-    }
-  while (n > 9)
-    {
-      n = n / 10;
+      n = n / base;
       i++;
     }
   return (i);
+}
+
+void rz_ultoa(char *res, unsigned long n, enum flag_type flag)
+{
+  int len;
+  int base;
+
+  base = flag_base(flag);
+  len = digit_count(n, base);
+  res += len;
+  *res-- = '\0';
+  while (--len)
+    {
+      *res-- = digit_char(n % base, flag);
+      n = n / base;
+    }
+  *res = digit_char(n % base, flag);
 }
 
 void rz_ltoa(char *res, long n)
@@ -31,9 +60,11 @@ void rz_ltoa(char *res, long n)
       ft_strcpy(res, "-9223372036854775808");
       return;
     }
-  len = count(n);
   if ((sign = n < 0 ? 1 : 0))
     n = -n;
+  len = digit_count(n, 10);
+  if (sign)
+    len++;
   res += len;
   *res-- = '\0';
   while (--len)

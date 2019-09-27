@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "rz_numtostr.h"
+#include "rz_printf_impl.h"
 #include "libft/libft.h"
 
 static unsigned long rz_pow(int base, int exp)
