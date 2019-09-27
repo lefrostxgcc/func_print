@@ -2,21 +2,21 @@
 #include "rz_printf_impl.h"
 #include "libft/libft.h"
 
-static unsigned flag_base(enum flag_type flag)
+static unsigned flag_base(enum rz_arg_type flag)
 {
-  if (flag == f_o)
+  if (flag == type_o)
     return 8;
-  else if (flag == f_x || flag == f_X || flag == f_p)
+  else if (flag == type_x || flag == type_X || flag == type_p)
     return 16;
   return 10;
 }
 
-static char digit_char(unsigned long n, enum flag_type type)
+static char digit_char(unsigned long n, enum rz_arg_type type)
 {
   if (n < 10)
     return n + '0';
   else
-    return n - 10 + (type == f_X ? 'A' : 'a');
+    return n - 10 + (type == type_X ? 'A' : 'a');
 }
 
 static int digit_count(unsigned long n, unsigned base)
@@ -32,7 +32,7 @@ static int digit_count(unsigned long n, unsigned base)
   return (i);
 }
 
-void rz_ultoa(char *res, unsigned long n, enum flag_type flag)
+void rz_ultoa(char *res, unsigned long n, enum rz_arg_type flag)
 {
   int len;
   int base;

@@ -33,7 +33,7 @@ static void extract_int_frac(long double arg, int precision, long *intp, unsigne
     (*fracp)++;
  }
 
-static void fill_frac(char *buf, struct arg_info *info, unsigned long fracp)
+static void fill_frac(char *buf, struct rz_arg *info, unsigned long fracp)
 {
   int int_len;
   int total_len;
@@ -43,7 +43,7 @@ static void fill_frac(char *buf, struct arg_info *info, unsigned long fracp)
   if (info->precision > 0)
     {
       buf[total_len++] = '.';
-      rz_ultoa(buf + total_len, fracp, info->core);
+      rz_ultoa(buf + total_len, fracp, info->type);
       total_len = ft_strlen(buf);
       zero_count = info->precision - (total_len - 1 - int_len);
       if (zero_count > 0)
@@ -55,7 +55,7 @@ static void fill_frac(char *buf, struct arg_info *info, unsigned long fracp)
     }
 }
 
-void rz_ftoa(char *buf, struct arg_info *info, long double arg)
+void rz_ftoa(char *buf, struct rz_arg *info, long double arg)
 {
   long intp;
   unsigned long fracp;
