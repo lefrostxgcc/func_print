@@ -2,10 +2,22 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
+static unsigned long rz_pow(int base, int exp)
+{
+  unsigned long result;
+  int i;
+
+  result = 1;
+  i = 0;
+  while (i++ < exp)
+    result *= base;
+  return (result);
+}
+
 static void extract_int_frac(long double arg, int precision, long *intp, unsigned long *fracp)
 {
-  long i;
-  long v;
+  unsigned long frac_pow;
+  double frac;
 
   *intp = arg;
   arg -= *intp;
@@ -13,17 +25,13 @@ static void extract_int_frac(long double arg, int precision, long *intp, unsigne
     arg = -arg;
   if (precision == 0 && arg >= 0.5)
     *intp += *intp > 0 ? 1 : -1;
-  i = 0;
-  v = 1;
-  while (i < precision)
-    {
-      v *= 10;
-      i++;
-    }
-  arg *= v;
-  arg += 1.0 / v;
-  *fracp = arg;
-}
+  frac_pow = rz_pow(10, precision);
+  frac = arg * frac_pow;
+  *fracp = frac;
+  frac *= 10;
+  if (((unsigned long) frac) % 10 >= 5)
+    (*fracp)++;
+ }
 
 static void fill_frac(char *buf, struct arg_info *info, unsigned long fracp)
 {

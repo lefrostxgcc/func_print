@@ -2,7 +2,7 @@
 #include "rz_numtostr.h"
 #include "libft/libft.h"
 
-static unsigned flag_size(enum flag_type flag)
+static unsigned flag_base(enum flag_type flag)
 {
   if (flag == f_o)
     return 8;
@@ -19,14 +19,14 @@ static char digit_char(unsigned long n, enum flag_type type)
     return n - 10 + (type == f_X ? 'A' : 'a');
 }
 
-static int count(unsigned long n, unsigned size)
+int digit_count(unsigned long n, unsigned base)
 {
   int i;
 
   i = 1;
-  while (n > size - 1)
+  while (n > base - 1)
     {
-      n = n / size;
+      n = n / base;
       i++;
     }
   return (i);
@@ -35,16 +35,16 @@ static int count(unsigned long n, unsigned size)
 void rz_ultoa(char *res, unsigned long n, enum flag_type flag)
 {
   int len;
-  unsigned size;
+  int base;
 
-  size = flag_size(flag);
-  len = count(n, size);
+  base = flag_base(flag);
+  len = digit_count(n, base);
   res += len;
   *res-- = '\0';
   while (--len)
     {
-      *res-- = digit_char(n % size, flag);
-      n = n / size;
+      *res-- = digit_char(n % base, flag);
+      n = n / base;
     }
-  *res = digit_char(n % size, flag);
+  *res = digit_char(n % base, flag);
 }
