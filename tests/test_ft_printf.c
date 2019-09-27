@@ -2223,6 +2223,18 @@ START_TEST(test_space_X)
 }
 END_TEST
 
+START_TEST(test_space_f)
+{
+  char buffer[128];
+  const char *format = "[% f]";
+  double a = 123.456;
+  int actual_result = ft_printf(format, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2493,6 +2505,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_space, test_space_o);
   tcase_add_test(tc_space, test_space_x);
   tcase_add_test(tc_space, test_space_X);
+  tcase_add_test(tc_space, test_space_f);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
