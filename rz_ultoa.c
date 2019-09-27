@@ -19,7 +19,7 @@ static char digit_char(unsigned long n, enum flag_type type)
     return n - 10 + (type == f_X ? 'A' : 'a');
 }
 
-int digit_count(unsigned long n, unsigned base)
+static int digit_count(unsigned long n, unsigned base)
 {
   int i;
 
