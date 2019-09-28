@@ -9,7 +9,7 @@ static void rz_printf(t_rz_buf *buf, const char *fmt, va_list ap)
 
     while (*fmt != '\0')
     {
-	rz_parse_fmt(&f, &fmt);
+	rz_parse_fmt(buf, &f, &fmt);
 	if (f.cast == cast_none || f.cast == cast_percent)
 	    print_fmt(buf, &f, &fmt);
 	else if (f.cast == cast_i)

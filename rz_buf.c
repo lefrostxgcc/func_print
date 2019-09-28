@@ -4,7 +4,11 @@
 
 void rz_buf_flush(t_rz_buf *buf)
 {
-    buf->total += rz_write(0, buf->data, buf->pos);
+    int bytes;
+
+    bytes = rz_write(0, buf->data, buf->pos);
+    if (buf->total >= 0)
+	buf->total += bytes;
     buf->pos = 0;
 }
 

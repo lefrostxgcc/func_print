@@ -35,9 +35,9 @@ int rz_read_integer_number(const char **s)
     end = start;
     while (ft_isdigit(*end))
 	end++;
-    *s = end;
     if (start == end)
-	return -1;
+      return (-1);
+    *s = end;
     while (start < end)
     {
 	number = number * 10 + (*start - '0');

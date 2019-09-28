@@ -43,5 +43,5 @@ t_rz_cast_type rz_select_cast(const t_rz_arg *f)
 	return (cast_ul);
     else if (f->type == type_percent)
 	return (cast_percent);
-    return (cast_i);
+    return (cast_none);
 }

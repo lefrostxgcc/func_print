@@ -57,7 +57,9 @@ static t_rz_arg_type rz_read_arg_type(const char *fmt)
 	return (type_percent);
     else if (*fmt == 'f')
 	return (type_f);
-    return (type_d);
+    else if (*fmt == 'i')
+	return (type_i);
+    return (type_none);
 }
 
 static void rz_read_flags(t_rz_arg *f, const char **fmt)
@@ -80,12 +82,15 @@ static void rz_read_flags(t_rz_arg *f, const char **fmt)
     }
 }
 
-void rz_parse_fmt(t_rz_arg *f, const char **fmt)
+void rz_parse_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
 {
+    const char *percent;
+  
     ft_memset(f, 0, sizeof *f);
     f->cast = cast_none;
     if (**fmt != '%')
       return;
+    percent = *fmt;
     (*fmt)++;
     rz_read_flags(f, fmt);
     f->width = rz_read_integer_number(fmt);
@@ -93,5 +98,16 @@ void rz_parse_fmt(t_rz_arg *f, const char **fmt)
     f->size = rz_read_arg_size(fmt);
     f->type = rz_read_arg_type(*fmt);
     f->cast = rz_select_cast(f);
+    f->fmtlen = *fmt - percent - 1;
     (*fmt)++;
+    if (f->type == type_none)
+    {
+	if (f->fmtlen > 0)
+	    (*fmt) = percent;
+	else
+	{
+	    (*fmt)--;
+	    buf->total = -1;
+	}
+    }
 }
