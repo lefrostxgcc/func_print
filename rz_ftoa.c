@@ -53,7 +53,7 @@ int rz_ftoa(char *buf, t_rz_arg *arg, long double n)
 	    ft_memset(buf + buf_len, '0', zero_count);
 	    buf_len += zero_count;
 	}
-	buf[buf_len] = '\0';
     }
+    buf[buf_len] = '\0';
     return (buf_len);
 }

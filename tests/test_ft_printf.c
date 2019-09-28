@@ -1863,6 +1863,19 @@ START_TEST(test_pound_f)
 }
 END_TEST
 
+START_TEST(test_pound_f_simple)
+{
+  char buffer[128];
+  const char *format = "[%#f] [%#f]";
+  double a = -1234.0;
+  double b = -123.4567;
+  int actual_result = ft_printf(format, a, b);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, b);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 START_TEST(test_zero_d)
 {
   char buffer[128];
@@ -2695,6 +2708,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_pound, test_pound_x);
   tcase_add_test(tc_pound, test_pound_X);
   tcase_add_test(tc_pound, test_pound_f);
+  tcase_add_test(tc_pound, test_pound_f_simple);
 
   tc_zero = tcase_create("Zero");
   tcase_add_checked_fixture(tc_zero, setup_ft_printf, teardown_ft_printf);
