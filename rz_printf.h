@@ -33,6 +33,7 @@ struct s_rz_arg
     int negative;
     int width;
     int precision;
+    int floatzero;
     int slen;
     int fmtlen;
 };

@@ -52,10 +52,12 @@ static void print_type_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
     {
 	if (f->negative)
 	    arg++;
-	if (f->precision > f->slen)
+	if (f->type != type_f && f->precision > f->slen)
 	    rz_buf_fill(buf, '0', f->precision - f->slen);
     }
     rz_buf_add(buf, arg, total);
+    if (f->type == type_f && f->floatzero > 0)
+      rz_buf_fill(buf, '0', f->floatzero);
 }
 
 void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
