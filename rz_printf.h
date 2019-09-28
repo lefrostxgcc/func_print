@@ -45,5 +45,18 @@ void rz_ftoa(char *res, t_rz_arg *info, long double arg);
 void rz_buf_flush(t_rz_buf *buf);
 void rz_buf_fill(t_rz_buf *buf, char ch, int count);
 void rz_buf_add(t_rz_buf *buf, const char *s, int len);
+void rz_parse_fmt(t_rz_arg *f, const char **fmt);
+int rz_read_integer_number(const char **s);
+t_rz_cast_type rz_select_cast(const t_rz_arg *f);
+int rz_signed(t_rz_arg_type t);
+int rz_unsigned(t_rz_arg_type t);
+int rz_number(t_rz_arg_type t);
+void print_long_arg(t_rz_buf *buf, t_rz_arg *f, long arg);
+void print_long_double_arg(t_rz_buf *buf, t_rz_arg *f, long double arg);
+void print_char(t_rz_buf *buf, t_rz_arg *f, char ch);
+void print_ulong_arg(t_rz_buf *buf, t_rz_arg *f, unsigned long arg);
+void print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **s);
+void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg);
+
 
 #endif

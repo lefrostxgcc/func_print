@@ -2590,7 +2590,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_float, test_float_width_greater_precision_small);
   tcase_add_test(tc_float, test_float_zero_width_greater_precision_small);
   tcase_add_test(tc_float, test_float_minus_width_greater_precision_small);
-  tcase_add_test(tc_float, test_lfloat);
+   tcase_add_test(tc_float, test_lfloat);
   tcase_add_test(tc_float, test_Lfloat);
   tcase_add_test(tc_float, test_f_precision0);
   tcase_add_test(tc_float, test_f_precision0_negative);
