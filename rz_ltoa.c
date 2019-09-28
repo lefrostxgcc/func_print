@@ -33,34 +33,42 @@ static int rz_digit_count(unsigned long n, unsigned base)
     return (count);
 }
 
-void rz_ultoa(char *res, unsigned long n, t_rz_arg_type type)
+int rz_ultoa(char *buf, unsigned long n, t_rz_arg_type type)
 {
     int base;
+    int buf_len;
 
     base = rz_type_base(type);
-    res[0] = '0';
-    res += rz_digit_count(n, base);
-    *res-- = '\0';
+    buf_len = rz_digit_count(n, base);
+    buf[0] = '0';
+    buf += buf_len;
+    *buf-- = '\0';
     while (n != 0)
     {
-	*res-- = rz_digit_to_char(n % base, type);
+	*buf-- = rz_digit_to_char(n % base, type);
 	n /= base;
     }
+    return (buf_len);
 }
 
-void rz_ltoa(char *res, long n)
+int rz_ltoa(char *buf, long n)
 {
+    int buf_len;
+    
     if (n == (long) 0x8000000000000000L)
     {
-	res[0] = '\0';
-	ft_strcpy(res, "-9223372036854775808");
-	return;
+	buf[0] = '\0';
+	ft_strcpy(buf, "-9223372036854775808");
+	return (sizeof ("-9223372036854775808"));
     }
+    buf_len = 0;
     if (n < 0)
     {
 	n = -n;
-	res[0] = '-';
-	res++;
+	buf[0] = '-';
+	buf++;
+	buf_len++;
     }
-    rz_ultoa(res, n, type_d);
+    buf_len += rz_ultoa(buf, n, type_d);
+    return (buf_len);
 }

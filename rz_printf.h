@@ -39,9 +39,9 @@ struct s_rz_arg
 typedef struct s_rz_buf t_rz_buf;
 typedef struct s_rz_arg t_rz_arg;
 
-void rz_ltoa(char *res, long number);
-void rz_ultoa(char *res, unsigned long number, t_rz_arg_type flag);
-void rz_ftoa(char *res, t_rz_arg *info, long double arg);
+int rz_ltoa(char *res, long number);
+int rz_ultoa(char *res, unsigned long number, t_rz_arg_type flag);
+int rz_ftoa(char *res, t_rz_arg *info, long double arg);
 void rz_buf_flush(t_rz_buf *buf);
 void rz_buf_fill(t_rz_buf *buf, char ch, int count);
 void rz_buf_add(t_rz_buf *buf, const char *s, int len);

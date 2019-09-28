@@ -13,53 +13,46 @@ static unsigned long rz_pow(int base, int exp)
     return (result);
 }
 
-static void extract_int_frac(long double arg, int precision, long *intp, unsigned long *fracp)
+static unsigned long rz_modfl(long double n, int precision, long *i)
 {
-    unsigned long frac_pow;
-    double frac;
+    unsigned long f;
 
-    *intp = arg;
-    arg -= *intp;
-    if (arg < 0)
-	arg = -arg;
-    if (precision == 0 && arg >= 0.5)
-	*intp += *intp > 0 ? 1 : -1;
-    frac_pow = rz_pow(10, precision);
-    frac = arg * frac_pow;
-    *fracp = frac;
-    frac *= 10;
-    if (((unsigned long) frac) % 10 >= 5)
-	(*fracp)++;
+    *i = n;
+    n -= *i;
+    if (n < 0)
+	n = -n;
+    if (precision == 0 && n >= 0.5)
+      *i += rz_ternary(*i > 0, 1, -1);
+    n *= rz_pow(10, precision);
+    f = n;
+    n *= 10;
+    if (((unsigned long) n) % 10 >= 5)
+	f++;
+    return (f);
 }
 
-static void fill_frac(char *buf, t_rz_arg *info, unsigned long fracp)
+int rz_ftoa(char *buf, t_rz_arg *arg, long double n)
 {
-    int int_len;
-    int total_len;
+    long i;
+    unsigned long f;
+    int f_len;
+    int buf_len;
     int zero_count;
 
-    total_len = int_len = ft_strlen(buf);
-    if (info->precision > 0)
+    f = rz_modfl(n, arg->precision, &i);
+    buf_len = rz_ltoa(buf, i);
+    if (arg->precision > 0)
     {
-	buf[total_len++] = '.';
-	rz_ultoa(buf + total_len, fracp, info->type);
-	total_len = ft_strlen(buf);
-	zero_count = info->precision - (total_len - 1 - int_len);
+	buf[buf_len++] = '.';
+	f_len = rz_ultoa(buf + buf_len, f, arg->type);
+	buf_len += f_len;
+	zero_count = arg->precision - f_len;
 	if (zero_count > 0)
 	{
-	    ft_memset(buf + total_len, '0', zero_count);
-	    total_len += zero_count;
+	    ft_memset(buf + buf_len, '0', zero_count);
+	    buf_len += zero_count;
 	}
-	buf[total_len] = '\0';
+	buf[buf_len] = '\0';
     }
-}
-
-void rz_ftoa(char *buf, t_rz_arg *f, long double n)
-{
-    long intp;
-    unsigned long fracp;
-
-    extract_int_frac(n, f->precision, &intp, &fracp);
-    rz_ltoa(buf, intp);
-    fill_frac(buf, f, fracp);
+    return (buf_len);
 }

@@ -62,7 +62,6 @@ void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 {
     if (*arg == '\0')
 	return;
-    f->slen = ft_strlen(arg);
     if (f->negative)
 	f->slen--;
     if (!f->minus)
