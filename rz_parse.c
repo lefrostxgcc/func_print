@@ -98,16 +98,16 @@ void rz_parse_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
     f->size = rz_read_arg_size(fmt);
     f->type = rz_read_arg_type(*fmt);
     f->cast = rz_select_cast(f);
-    f->fmtlen = *fmt - percent - 1;
-    (*fmt)++;
     if (f->type == type_none)
     {
-	if (f->fmtlen > 0)
-	    (*fmt) = percent;
-	else
+	if (**fmt != '\0')
 	{
-	    (*fmt)--;
-	    buf->total = -1;
+	    (*fmt) = percent + 1;
+	    rz_buf_add(buf, "%", 1);
 	}
+	else
+	    buf->total = -1;
     }
+    else
+	(*fmt)++;
 }

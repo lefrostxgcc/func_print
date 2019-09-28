@@ -2342,6 +2342,17 @@ START_TEST(test_space_Lf)
 }
 END_TEST
 
+START_TEST(test_omit_type)
+{
+  char buffer[128];
+  const char *format = "[%b123]";
+  int actual_result = ft_printf(format);
+  int expected_result = snprintf(buffer, sizeof buffer, format);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2626,6 +2637,7 @@ Suite *ft_printf_suite(void)
   tc_error_type = tcase_create("Error type");
   tcase_add_checked_fixture(tc_error_type, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_error_type, test_single_percent);
+  tcase_add_test(tc_error_type, test_omit_type);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
