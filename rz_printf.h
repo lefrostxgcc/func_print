@@ -3,7 +3,7 @@
 
 enum e_rz_cast_type {cast_none, cast_percent, cast_i, cast_u, cast_l,
 		     cast_ul, cast_double, cast_long_double};
-enum e_rz_arg_type {type_c, type_s, type_p, type_d, type_i,
+enum e_rz_arg_type {type_none, type_c, type_s, type_p, type_d, type_i,
 		    type_u, type_o, type_x, type_X, type_f,
 		    type_percent};
 
@@ -57,6 +57,6 @@ void print_char(t_rz_buf *buf, t_rz_arg *f, char ch);
 void print_ulong_arg(t_rz_buf *buf, t_rz_arg *f, unsigned long arg);
 void print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **s);
 void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg);
-
+int rz_ternary(int expression, int a, int b);
 
 #endif

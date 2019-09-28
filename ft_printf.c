@@ -34,7 +34,8 @@ int ft_printf(const char *fmt, ...)
 
     if (!fmt)
 	return (-1);
-    buf.pos = buf.total = 0;
+    buf.pos = 0;
+    buf.total = 0;
     va_start(ap, fmt);
     rz_printf(&buf, fmt, ap);
     rz_buf_flush(&buf);

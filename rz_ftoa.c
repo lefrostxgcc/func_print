@@ -54,12 +54,12 @@ static void fill_frac(char *buf, t_rz_arg *info, unsigned long fracp)
     }
 }
 
-void rz_ftoa(char *buf, t_rz_arg *info, long double arg)
+void rz_ftoa(char *buf, t_rz_arg *f, long double n)
 {
     long intp;
     unsigned long fracp;
 
-    extract_int_frac(arg, info->precision, &intp, &fracp);
+    extract_int_frac(n, f->precision, &intp, &fracp);
     rz_ltoa(buf, intp);
-    fill_frac(buf, info, fracp);
+    fill_frac(buf, f, fracp);
 }

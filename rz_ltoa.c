@@ -1,78 +1,66 @@
 #include "rz_printf.h"
 #include "libft/libft.h"
 
-static unsigned flag_base(t_rz_arg_type flag)
+static unsigned rz_type_base(t_rz_arg_type type)
 {
-    if (flag == type_o)
-	return 8;
-    else if (flag == type_x || flag == type_X || flag == type_p)
-	return 16;
-    return 10;
+    if (type == type_o)
+	return (8);
+    else if (type == type_x || type == type_X || type == type_p)
+	return (16);
+    return (10);
 }
 
-static char digit_char(unsigned long n, t_rz_arg_type type)
+static char rz_digit_to_char(int n, t_rz_arg_type type)
 {
     if (n < 10)
-	return n + '0';
+	return (n + '0');
+    else if (type == type_X)
+	return (n - 10 + 'A');
     else
-	return n - 10 + (type == type_X ? 'A' : 'a');
+	return (n - 10 + 'a');
 }
 
-static int digit_count(unsigned long n, unsigned base)
+static int rz_digit_count(unsigned long n, unsigned base)
 {
-    int i;
+    int count;
 
-    i = 1;
+    count = 1;
     while (n > base - 1)
     {
-	n = n / base;
-	i++;
+	n /= base;
+	count++;
     }
-    return (i);
+    return (count);
 }
 
-void rz_ultoa(char *res, unsigned long n, t_rz_arg_type flag)
+void rz_ultoa(char *res, unsigned long n, t_rz_arg_type type)
 {
-    int len;
     int base;
 
-    base = flag_base(flag);
-    len = digit_count(n, base);
-    res += len;
+    base = rz_type_base(type);
+    res[0] = '0';
+    res += rz_digit_count(n, base);
     *res-- = '\0';
-    while (--len)
+    while (n != 0)
     {
-	*res-- = digit_char(n % base, flag);
-	n = n / base;
+	*res-- = rz_digit_to_char(n % base, type);
+	n /= base;
     }
-    *res = digit_char(n % base, flag);
 }
 
 void rz_ltoa(char *res, long n)
 {
-    int len;
-    int sign;
-
-    if (n == (long) 9223372036854775808UL)
+    if (n == (long) 0x8000000000000000L)
     {
 	res[0] = '\0';
 	ft_strcpy(res, "-9223372036854775808");
 	return;
     }
-    if ((sign = n < 0 ? 1 : 0))
-	n = -n;
-    len = digit_count(n, 10);
-    if (sign)
-	len++;
-    res += len;
-    *res-- = '\0';
-    while (--len)
+    if (n < 0)
     {
-	*res-- = n % 10 + '0';
-	n = n / 10;
+	n = -n;
+	res[0] = '-';
+	res++;
     }
-    if (sign)
-	*res = '-';
-    else
-	*res = n + '0';
+    rz_ultoa(res, n, type_d);
 }
