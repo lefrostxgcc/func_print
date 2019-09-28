@@ -2375,6 +2375,20 @@ START_TEST(test_full_unknown_type)
 }
 END_TEST
 
+START_TEST(test_multi_unknown_type)
+{
+  char buffer[128];
+  const char *format = "My name is %-10s. I am %+5d. [%#+-123.456r How are you? %% %c stop";
+  const char *s = "Doit";
+  int a = 57;
+  char c = 'q';
+  int actual_result = ft_printf(format, s, a, c);
+  int expected_result = snprintf(buffer, sizeof buffer, format, s, a, c);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2662,6 +2676,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_error_type, test_omit_type);
   tcase_add_test(tc_error_type, test_width_omit_type);
   tcase_add_test(tc_error_type, test_full_unknown_type);
+  tcase_add_test(tc_error_type, test_multi_unknown_type);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
