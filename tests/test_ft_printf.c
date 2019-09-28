@@ -2417,6 +2417,23 @@ START_TEST(test_multi_single_percent)
 }
 END_TEST
 
+START_TEST(test_multiflags_zero_precision)
+{
+  char buffer[128];
+  const char *format = "%015.5d %0.4i %0-20.10u %-010.2o %-010.5x %05.10X";
+  int a = 123;
+  int b = -789;
+  unsigned c = 45;
+  unsigned d = 012345;
+  unsigned e = 0xabc;
+  unsigned f = 0x123ab;
+  int actual_result = ft_printf(format, a, b, c, d, e, f);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, b, c, d, e, f);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2431,6 +2448,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_float;
   TCase *tc_space;
   TCase *tc_error_type;
+  TCase *tc_multiflags;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -2707,6 +2725,10 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_error_type, test_multi_unknown_type);
   tcase_add_test(tc_error_type, test_multi_omit_type);
   tcase_add_test(tc_error_type, test_multi_single_percent);
+
+  tc_multiflags = tcase_create("Multi flags");
+  tcase_add_checked_fixture(tc_multiflags, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_multiflags, test_multiflags_zero_precision);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
