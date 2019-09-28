@@ -2434,6 +2434,23 @@ START_TEST(test_multiflags_zero_precision)
 }
 END_TEST
 
+START_TEST(test_multiflags_plus_space)
+{
+  char buffer[128];
+  const char *format = "% + 015.5d % 0+.4i % 0+-  20.10u %-0 10+.2o %+-+0 10.5x %0+ +5.10X";
+  int a = 123;
+  int b = -789;
+  unsigned c = 45;
+  unsigned d = 012345;
+  unsigned e = 0xabc;
+  unsigned f = 0x123ab;
+  int actual_result = ft_printf(format, a, b, c, d, e, f);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, b, c, d, e, f);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -2729,6 +2746,7 @@ Suite *ft_printf_suite(void)
   tc_multiflags = tcase_create("Multi flags");
   tcase_add_checked_fixture(tc_multiflags, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_multiflags, test_multiflags_zero_precision);
+  tcase_add_test(tc_multiflags, test_multiflags_plus_space);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
