@@ -241,6 +241,52 @@ void rz_print_type_di(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_buf_fill(buf, ch, padcount);
 }
 
+void rz_print_type_f(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    char ch;
+    int total;
+    int padcount;
+
+    if (!f->minus && f->zero && f->precision < 0)
+	ch = '0';
+    else
+	ch = ' ';
+    if (f->negative)
+    {
+	s++;
+	f->slen--;
+    }
+    total = f->slen;
+    if (f->negative || f->plus || f->space)
+	total++;
+    padcount = f->width - total;
+    if (ch == '0')
+    {
+	if (f->negative)
+	    rz_buf_add(buf, "-", 1);
+	else if (f->plus)
+	    rz_buf_add(buf, "+", 1);
+	else if (f->space)
+	    rz_buf_add(buf, " ", 1);
+    }
+    if (!f->minus && padcount > 0)
+	rz_buf_fill(buf, ch, padcount);
+    if (ch != '0')
+    {
+	if (f->negative)
+	    rz_buf_add(buf, "-", 1);
+	else if (f->plus)
+	    rz_buf_add(buf, "+", 1);
+	else if (f->space)
+	    rz_buf_add(buf, " ", 1);
+    }
+    rz_buf_add(buf, s, f->slen);
+    if (f->floatzero > 0)
+	rz_buf_fill(buf, '0', f->floatzero);
+    if (f->minus && padcount > 0)
+	rz_buf_fill(buf, ch, padcount);
+}
+
 void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 {
     if (*arg == '\0')
@@ -257,6 +303,8 @@ void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 	rz_print_type_p(buf, f, arg);
     else if (f->type == type_d || f->type == type_i)
 	rz_print_type_di(buf, f, arg);
+    else if (f->type == type_f)
+	rz_print_type_f(buf, f, arg);
     else
     {
 	if (f->negative)
