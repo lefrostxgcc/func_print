@@ -81,12 +81,38 @@ void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_buf_fill(buf, ' ', spaces);
 }
 
+void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    char ch;
+    int total;
+    int padcount;
+
+    if (!f->minus && f->zero && f->precision < 0)
+	ch = '0';
+    else
+	ch = ' ';
+    if (f->precision > f->slen)
+	total = f->precision;
+    else
+	total = f->slen;
+    padcount = f->width - total;
+    if (!f->minus && padcount > 0)
+	rz_buf_fill(buf, ch, padcount);
+    if (f->precision > f->slen)
+	rz_buf_fill(buf, '0', f->precision - f->slen);
+    rz_buf_add(buf, s, f->slen);
+    if (f->minus && padcount > 0)
+	rz_buf_fill(buf, ch, padcount);
+}
+
 void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 {
     if (*arg == '\0')
 	return;
     if (f->type == type_s)
 	rz_print_type_s(buf, f, arg);
+    else if (f->type == type_u)
+	rz_print_type_u(buf, f, arg);
     else
     {
 	if (f->negative)
