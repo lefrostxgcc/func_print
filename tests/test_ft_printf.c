@@ -120,8 +120,8 @@ START_TEST(test_single_param_min_int)
   int a = -2147483648;
   int actual_result = ft_printf("%d", a);
   int expected_result = snprintf(buffer, sizeof buffer, "%d", a);
-  ck_assert_int_eq(actual_result, expected_result);
   ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
 }
 END_TEST
 
