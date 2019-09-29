@@ -64,7 +64,7 @@ static void print_type_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
       rz_buf_fill(buf, '0', f->floatzero);
 }
 
-void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
+void rz_print_type_cs(t_rz_buf *buf, t_rz_arg *f, const char *s)
 {
     int total;
     int spaces;
@@ -291,8 +291,8 @@ void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 {
     if (*arg == '\0')
 	return;
-    if (f->type == type_s)
-	rz_print_type_s(buf, f, arg);
+    if (f->type == type_c || f->type == type_s)
+	rz_print_type_cs(buf, f, arg);
     else if (f->type == type_u)
 	rz_print_type_u(buf, f, arg);
     else if (f->type == type_o)
