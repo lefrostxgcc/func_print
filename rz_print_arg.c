@@ -64,16 +64,38 @@ static void print_type_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
       rz_buf_fill(buf, '0', f->floatzero);
 }
 
+void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    int total;
+    int spaces;
+
+    if (f->precision >= 0 && f->precision < f->slen)
+	total = f->precision;
+    else
+	total = f->slen;
+    spaces = f->width - total;
+    if (!f->minus && spaces > 0)
+	rz_buf_fill(buf, ' ', spaces);
+    rz_buf_add(buf, s, total);
+    if (f->minus && spaces > 0)
+	rz_buf_fill(buf, ' ', spaces);
+}
+
 void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg)
 {
     if (*arg == '\0')
 	return;
-    if (f->negative)
-	f->slen--;
-    if (!f->minus)
-	print_pad(buf, f);
-    print_prefix_arg(buf, f);
-    print_type_arg(buf, f, arg);
-    if (f->minus)
-	print_pad(buf, f);
+    if (f->type == type_s)
+	rz_print_type_s(buf, f, arg);
+    else
+    {
+	if (f->negative)
+	    f->slen--;
+	if (!f->minus)
+	    print_pad(buf, f);
+	print_prefix_arg(buf, f);
+	print_type_arg(buf, f, arg);
+	if (f->minus)
+	    print_pad(buf, f);
+    }
 }
