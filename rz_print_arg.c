@@ -13,7 +13,8 @@ static void print_pad(t_rz_buf *buf, t_rz_arg *f)
     if (f->negative || (f->plus && rz_signed(f->type)))
 	total++;
     if (f->type == type_p ||
-	(f->sharp && (f->type == type_x || f->type == type_X)))
+	(f->sharp && (f->type == type_x || f->type == type_X) &&
+	 !f->argzero))
 	total += 2;
     else if (f->type == type_o && f->sharp && !f->argzero)
 	total++;
@@ -35,7 +36,8 @@ static void print_prefix_arg(t_rz_buf *buf, t_rz_arg *f)
 	    rz_buf_add(buf, " ", 1);
     }
     if (f->type == type_p ||
-	(f->sharp && (f->type == type_x || f->type == type_X)))
+	(f->sharp && (f->type == type_x || f->type == type_X) &&
+	 !f->argzero))
 	rz_buf_add(buf, f->type != type_X ? "0x" : "0X", 2);
     else if (f->sharp && f->type == type_o && !f->argzero)
 	rz_buf_add(buf, "0", 1);
