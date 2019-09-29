@@ -2498,7 +2498,7 @@ END_TEST
 START_TEST(test_multiflags_plus_space)
 {
   char buffer[128];
-  const char *format = "% + 015.5d % 0+.4i % 0+-  20.10u %-0 10+.2o %+-+0 10.5x %0+ +5.10X";
+  const char *format = "% + 15.5d % +.4i % +-  20.10u %-10+o %+-+ 10.5x %+ +5.10X";
   int a = 123;
   int b = -789;
   unsigned c = 45;
@@ -2839,6 +2839,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_float);
   suite_add_tcase(s, tc_space);
   suite_add_tcase(s, tc_error_type);
+  suite_add_tcase(s, tc_multiflags);
 
   return s;
 }

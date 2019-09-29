@@ -26,6 +26,7 @@ void print_long_double_arg(t_rz_buf *buf, t_rz_arg *f, long double arg)
     else
 	f->slen = rz_ftoa(str_rep, f, (double) arg);
     f->negative = arg < 0;
+    f->precision = -1;
     print_arg(buf, f, str_rep);
 }
 

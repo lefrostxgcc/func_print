@@ -6,9 +6,11 @@ static void print_pad(t_rz_buf *buf, t_rz_arg *f)
     char ch;
     int total;
 
-    ch = (!f->minus && f->zero) ? '0' : ' ';
+    ch = (!f->minus && f->zero && f->precision < 0) ? '0' : ' ';
     total = f->slen;
     if (f->precision >= 0 && f->type == type_s && f->precision < f->slen)
+	total = f->precision;
+    if (f->precision > f->slen && f->type != type_s)
 	total = f->precision;
     if (f->negative || (f->plus && rz_signed(f->type)))
 	total++;
@@ -26,7 +28,7 @@ static void print_pad(t_rz_buf *buf, t_rz_arg *f)
 
 static void print_prefix_arg(t_rz_buf *buf, t_rz_arg *f)
 {
-    if (rz_signed(f->type) && !f->zero)
+    if (rz_signed(f->type) && (!f->zero || f->precision > f->slen))
     {
 	if (f->negative)
 	    rz_buf_add(buf, "-", 1);
