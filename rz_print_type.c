@@ -48,6 +48,7 @@ void print_ulong_arg(t_rz_buf *buf, t_rz_arg *f, unsigned long arg)
     }
     else
     {
+	f->argzero = (arg == 0);
 	if (f->size == size_hh)
 	    f->slen = rz_ultoa(str_rep, (unsigned char) arg, f->type);
 	else if (f->size == size_h)

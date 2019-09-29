@@ -31,6 +31,7 @@ struct s_rz_arg
     int zero;
     int space;
     int negative;
+    int argzero;
     int width;
     int precision;
     int floatzero;
