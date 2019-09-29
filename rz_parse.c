@@ -1,7 +1,7 @@
 #include "rz_printf.h"
 #include "libft/libft.h"
 
-static t_rz_arg_size rz_read_arg_size(const char **fmt)
+static t_rz_arg_size rz_read_size(const char **fmt)
 {
     const char *p;
     t_rz_arg_size size;
@@ -21,7 +21,7 @@ static t_rz_arg_size rz_read_arg_size(const char **fmt)
     return (size);
 }
 
-static int rz_read_arg_precision(const char **fmt)
+static int rz_read_precision(const char **fmt)
 {
     int precision;
   
@@ -35,7 +35,7 @@ static int rz_read_arg_precision(const char **fmt)
 	return (precision);
 }
 
-static t_rz_arg_type rz_read_arg_type(const char *fmt)
+static t_rz_arg_type rz_read_type(const char *fmt)
 {
     if (*fmt == 'c')
 	return (type_c);
@@ -94,9 +94,9 @@ void rz_parse_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
     (*fmt)++;
     rz_read_flags(f, fmt);
     f->width = rz_read_integer_number(fmt);
-    f->precision = rz_read_arg_precision(fmt);
-    f->size = rz_read_arg_size(fmt);
-    f->type = rz_read_arg_type(*fmt);
+    f->precision = rz_read_precision(fmt);
+    f->size = rz_read_size(fmt);
+    f->type = rz_read_type(*fmt);
     f->cast = rz_select_cast(f);
     if (f->type == type_none)
     {
