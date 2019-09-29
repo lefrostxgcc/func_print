@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 HEADERS := ft_printf.h libft/libft.h rz_printf.h tests/rz_write.h
 FILES := ft_printf.c rz_ltoa.c rz_ftoa.c rz_buf.c rz_parse.c rz_cast.c \
-	rz_utility.c rz_print_arg.c rz_print_type.c
+	rz_utility.c rz_print_type.c rz_print_signed.c rz_print_unsigned.c
 
 OBJS = $(FILES:.c=.o)
 

@@ -1,0 +1,37 @@
+#include "rz_printf.h"
+
+static void rz_print_sign_placeholder(t_rz_buf *buf, t_rz_arg *f)
+{
+    if (f->negative)
+	rz_buf_add(buf, "-", 1);
+    else if (f->plus)
+	rz_buf_add(buf, "+", 1);
+    else if (f->space)
+	rz_buf_add(buf, " ", 1);
+}
+
+void rz_print_type_dif(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    char ch;
+    int width;
+    int padding;
+
+    ch = rz_tern_l(!f->minus && f->zero && f->precision < 0, '0', ' ');
+    width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
+    if (f->negative || f->plus || f->space)
+	width++;
+    padding = f->width - width;
+    if (ch == '0')
+	rz_print_sign_placeholder(buf, f);
+    if (!f->minus && padding > 0)
+	rz_buf_fill(buf, ch, padding);
+    if (ch != '0')
+	rz_print_sign_placeholder(buf, f);
+    if (f->type != type_f && f->precision > f->slen)
+	rz_buf_fill(buf, '0', f->precision - f->slen);
+    rz_buf_add(buf, s, f->slen);
+    if (f->type == type_f && f->floatzero > 0)
+	rz_buf_fill(buf, '0', f->floatzero);
+    if (f->minus && padding > 0)
+	rz_buf_fill(buf, ' ', padding);
+}

@@ -11,19 +11,19 @@ static void rz_printf(t_rz_buf *buf, const char *fmt, va_list ap)
     {
 	rz_parse_fmt(buf, &f, &fmt);
 	if (f.cast == cast_none || f.cast == cast_percent)
-	    print_fmt(buf, &f, &fmt);
+	    rz_print_fmt(buf, &f, &fmt);
 	else if (f.cast == cast_i)
-	    print_long_arg(buf, &f, va_arg(ap, int));
+	    rz_print_as_long(buf, &f, va_arg(ap, int));
 	else if (f.cast == cast_u)
-	    print_ulong_arg(buf, &f, va_arg(ap, unsigned int));
+	    rz_print_as_ulong(buf, &f, va_arg(ap, unsigned int));
 	else if (f.cast == cast_l)
-	    print_long_arg(buf, &f, va_arg(ap, long));
+	    rz_print_as_long(buf, &f, va_arg(ap, long));
 	else if (f.cast == cast_ul)
-	    print_ulong_arg(buf, &f, va_arg(ap, unsigned long));
+	    rz_print_as_ulong(buf, &f, va_arg(ap, unsigned long));
 	else if (f.cast == cast_double)
-	    print_long_double_arg(buf, &f, va_arg(ap, double));
+	    rz_print_as_ldouble(buf, &f, va_arg(ap, double));
 	else if (f.cast == cast_long_double)
-	    print_long_double_arg(buf, &f, va_arg(ap, long double));
+	    rz_print_as_ldouble(buf, &f, va_arg(ap, long double));
     }
 }
 

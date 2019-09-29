@@ -54,12 +54,17 @@ t_rz_cast_type rz_select_cast(const t_rz_arg *f);
 int rz_signed(t_rz_arg_type t);
 int rz_unsigned(t_rz_arg_type t);
 int rz_number(t_rz_arg_type t);
-void print_long_arg(t_rz_buf *buf, t_rz_arg *f, long arg);
-void print_long_double_arg(t_rz_buf *buf, t_rz_arg *f, long double arg);
-void print_char(t_rz_buf *buf, t_rz_arg *f, char ch);
-void print_ulong_arg(t_rz_buf *buf, t_rz_arg *f, unsigned long arg);
-void print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **s);
-void print_arg(t_rz_buf *buf, t_rz_arg *f, const char *arg);
-int rz_ternary(int expression, int a, int b);
+void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long arg);
+void rz_print_as_ldouble(t_rz_buf *buf, t_rz_arg *f, long double arg);
+void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long arg);
+void rz_print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **s);
+long rz_tern_l(int expression, long a, long b);
+void *rz_tern_p(int expression, void *a, void *b);
+void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *arg);
+void rz_print_type_cs(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_xp(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_dif(t_rz_buf *buf, t_rz_arg *f, const char *s);
 
 #endif

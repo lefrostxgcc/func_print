@@ -9,9 +9,9 @@ static t_rz_arg_size rz_read_arg_size(const char **fmt)
     size = size_none;
     p = *fmt;
     if (*p == 'h')
-	size = rz_ternary(p[1] == 'h', size_hh, size_h);
+	size = rz_tern_l(p[1] == 'h', size_hh, size_h);
     else if (*p == 'l')
-	size = rz_ternary(p[1] == 'l', size_ll, size_l);
+	size = rz_tern_l(p[1] == 'l', size_ll, size_l);
     else if (*p == 'L')
 	size = size_L;
     if (size == size_h || size == size_l || size == size_L)

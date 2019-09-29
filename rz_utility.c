@@ -1,7 +1,7 @@
 #include "rz_printf.h"
 #include "libft/libft.h"
 
-int rz_ternary(int expression, int a, int b)
+long rz_tern_l(int expression, long a, long b)
 {
     if (expression)
 	return (a);
@@ -9,19 +9,12 @@ int rz_ternary(int expression, int a, int b)
 	return (b);
 }
 
-int rz_signed(t_rz_arg_type t)
+void *rz_tern_p(int expression, void *a, void *b)
 {
-    return (t == type_d || t == type_i || t == type_p || t == type_f);
-}
-
-int rz_unsigned(t_rz_arg_type t)
-{
-    return (t == type_u || t == type_o || t == type_x || t == type_X);
-}
-
-int rz_number(t_rz_arg_type t)
-{
-    return (rz_signed(t) || rz_unsigned(t));
+    if (expression)
+	return (a);
+    else
+	return (b);
 }
 
 int rz_read_integer_number(const char **s)

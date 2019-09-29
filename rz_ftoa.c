@@ -22,7 +22,7 @@ static unsigned long rz_modfl(long double n, int precision, long *i)
     if (n < 0)
 	n = -n;
     if (precision == 0 && n >= 0.5)
-      *i += rz_ternary(*i > 0, 1, -1);
+      *i += rz_tern_l(*i > 0, 1, -1);
     n *= rz_pow(10, precision);
     f = n;
     n *= 10;
