@@ -2272,6 +2272,18 @@ START_TEST(test_f_min_long_intpart)
 }
 END_TEST
 
+START_TEST(test_f_max_long_floatpart)
+{
+  char buffer[256];
+  const char *format = "%.18f %.18lf %.18Lf";
+  long double a = 0.18446744073709551615L;
+  int actual_result = ft_printf(format, a, a, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 START_TEST(test_space_d)
 {
   char buffer[128];
@@ -3170,6 +3182,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_float, test_f_round_negative);
   tcase_add_test(tc_float, test_f_max_long_intpart);
   tcase_add_test(tc_float, test_f_min_long_intpart);
+  tcase_add_test(tc_float, test_f_max_long_floatpart);
 
   tc_space = tcase_create("Space");
   tcase_add_checked_fixture(tc_space, setup_ft_printf, teardown_ft_printf);
