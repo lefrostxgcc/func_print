@@ -5,7 +5,7 @@ void rz_print_type_cs(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int width;
     int spaces;
 
-    if (f->precision >= 0 && f->precision < f->slen)
+    if (f->type == type_s && f->precision >= 0 && f->precision < f->slen)
 	width = f->precision;
     else
 	width = f->slen;

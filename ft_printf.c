@@ -1,7 +1,6 @@
 #include <stdarg.h>
 #include "ft_printf.h"
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 static void rz_printf(t_rz_buf *buf, const char *fmt, va_list ap)
 {

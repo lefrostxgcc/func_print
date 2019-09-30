@@ -1,5 +1,4 @@
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 static unsigned long rz_pow(int base, int exp)
 {
