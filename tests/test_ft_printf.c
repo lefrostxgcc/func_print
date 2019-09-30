@@ -2321,6 +2321,19 @@ START_TEST(test_f_round_max_bothpart_default_precision)
 }
 END_TEST
 
+START_TEST(test_f_round_max_bothpart_precision_5)
+{
+  char buffer[256];
+  const char *format = "%.5f %.5lf %.5Lf %.5f %.5lf %.5Lf";
+  long double a = 9223372036854775807.18446744073709551615L;
+  long double b = -9223372036854775808.18446744073709551615L;
+  int actual_result = ft_printf(format, a, a, a, b, b, b);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, b, b, b);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 START_TEST(test_space_d)
 {
   char buffer[128];
@@ -3223,6 +3236,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_float, test_f_max_long_bothpart);
   tcase_add_test(tc_float, test_f_min_long_bothpart);
   tcase_add_test(tc_float, test_f_round_max_bothpart_default_precision);
+  tcase_add_test(tc_float, test_f_round_max_bothpart_precision_5);
 
   tc_space = tcase_create("Space");
   tcase_add_checked_fixture(tc_space, setup_ft_printf, teardown_ft_printf);
