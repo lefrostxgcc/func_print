@@ -6,12 +6,11 @@ void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long a)
     char str_rep[21];
   
     if (f->size == size_hh)
-	f->slen = rz_ltoa(str_rep, (signed char) a);
+	f->slen = rz_ltoa(str_rep, f, (signed char) a);
     else if (f->size == size_h)
-	f->slen = rz_ltoa(str_rep, (short) a);
+	f->slen = rz_ltoa(str_rep, f, (short) a);
     else
-	f->slen = rz_ltoa(str_rep, a);
-    f->negative = a < 0;
+	f->slen = rz_ltoa(str_rep, f, a);
     rz_print_type(buf, f, str_rep);
 }
 

@@ -51,12 +51,13 @@ int rz_ultoa(char *buf, unsigned long n, t_rz_arg_type type)
     return (buf_len);
 }
 
-int rz_ltoa(char *buf, long n)
+int rz_ltoa(char *buf, t_rz_arg *f, long n)
 {
     int buf_len;
     
     if (n == (long) 0x8000000000000000L)
     {
+	f->negative = 1;
 	buf[0] = '\0';
 	ft_strcpy(buf, "-9223372036854775808");
 	return (sizeof("-9223372036854775808") - 1);
@@ -64,6 +65,7 @@ int rz_ltoa(char *buf, long n)
     buf_len = 0;
     if (n < 0)
     {
+	f->negative = 1;
 	n = -n;
 	buf[0] = '-';
 	buf++;
