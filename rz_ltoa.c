@@ -59,7 +59,7 @@ int rz_ltoa(char *buf, long n)
     {
 	buf[0] = '\0';
 	ft_strcpy(buf, "-9223372036854775808");
-	return (sizeof ("-9223372036854775808"));
+	return (sizeof("-9223372036854775808") - 1);
     }
     buf_len = 0;
     if (n < 0)
