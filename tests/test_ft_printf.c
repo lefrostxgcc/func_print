@@ -2565,7 +2565,7 @@ START_TEST(test_limits_min_long)
 {
   char buffer[128];
   const char *format = "%ld %li %lld %lli";
-  long a = -9223372036854775808L;
+  long a = 0x8000000000000000L;
   int actual_result = ft_printf(format, a, a, a, a);
   int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
@@ -2760,6 +2760,18 @@ START_TEST(test_limits_one_above_ld)
   unsigned long a = 9223372036854775808UL;
   int actual_result = ft_printf(format, a, a, a, a);
   int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
+START_TEST(test_limits_one_below_lu)
+{
+  char buffer[256];
+  const char *format = "%lu %lo %lx %lX %llu %llo %llx %llX";
+  long a = -1;
+  int actual_result = ft_printf(format, a, a, a, a, a, a, a, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, a, a, a, a, a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
   ck_assert_int_eq(actual_result, expected_result);
 }
@@ -3090,6 +3102,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_limits, test_limits_one_above_u);
   tcase_add_test(tc_limits, test_limits_one_below_u);
   tcase_add_test(tc_limits, test_limits_one_above_ld);
+  tcase_add_test(tc_limits, test_limits_one_below_lu);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
