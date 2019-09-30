@@ -2849,6 +2849,18 @@ START_TEST(test_limits_min_char)
 }
 END_TEST
 
+START_TEST(test_limits_max_uchar)
+{
+  char buffer[256];
+  const char *format = "%hhu %hho %hhx %hhX";
+  long a = 255;
+  int actual_result = ft_printf(format, a, a, a, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3181,6 +3193,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_limits, test_limits_min_ushort);
   tcase_add_test(tc_limits, test_limits_max_char);
   tcase_add_test(tc_limits, test_limits_min_char);
+  tcase_add_test(tc_limits, test_limits_max_uchar);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
