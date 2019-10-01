@@ -3158,6 +3158,16 @@ START_TEST(test_other_sharp_x_precision)
 }
 END_TEST
 
+START_TEST(test_other_sharp_x_all_precision)
+{
+  char buffer[256];
+  int ac = ft_printf("%0#10.0x", 0);
+  int ex = snprintf(buffer, sizeof buffer, "%0#10.0x", 0);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3519,6 +3529,7 @@ Suite *ft_printf_suite(void)
   tcase_add_checked_fixture(tc_other, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_other, test_other_sharp_o_precision);
   tcase_add_test(tc_other, test_other_sharp_x_precision);
+  tcase_add_test(tc_other, test_other_sharp_x_all_precision);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);

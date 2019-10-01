@@ -59,6 +59,32 @@ void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_buf_fill(buf, ' ', padding);
 }
 
+static void rz_print_x_zero(t_rz_buf *buf, t_rz_arg *f, char ch)
+{
+    int padding;
+
+    if (f->precision == 0)
+	rz_buf_fill(buf, ' ', rz_tern_l(f->width > 0, f->width, 0));
+    else if(f->precision > 0)
+    {
+	padding = f->width - f->precision;
+	if (padding > 0 && !f->minus)
+	    rz_buf_fill(buf, ' ', padding);
+	rz_buf_fill(buf, '0', f->precision);
+	if (padding > 0 && f->minus)
+	    rz_buf_fill(buf, ' ', padding);
+    }
+    else
+    {
+	padding = f->width - 1;
+	if (padding > 0 && !f->minus)
+	    rz_buf_fill(buf, ch, padding);
+	rz_buf_fill(buf, '0', 1);
+	if (padding > 0 && f->minus)
+	    rz_buf_fill(buf, ' ', padding);
+    }
+}
+
 void rz_print_type_x(t_rz_buf *buf, t_rz_arg *f, const char *s)
 {
     char ch;
@@ -66,6 +92,10 @@ void rz_print_type_x(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int padding;
 
     ch = rz_tern_l(!f->minus && f->zero && f->precision < 0, '0', ' ');
+    if (f->argzero)
+	rz_print_x_zero(buf, f, ch);
+    else
+    {
     width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
     if (f->sharp && !f->argzero)
 	width += 2;
@@ -82,6 +112,7 @@ void rz_print_type_x(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_buf_add(buf, s, f->slen);
     if (f->minus && padding > 0)
 	rz_buf_fill(buf, ' ', padding);
+    }
 }
 
 void rz_print_type_p(t_rz_buf *buf, t_rz_arg *f, const char *s)
