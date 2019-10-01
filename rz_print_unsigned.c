@@ -53,7 +53,8 @@ void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_buf_add(buf, "0", 1);
     if (f->precision > f->slen)
 	rz_buf_fill(buf, '0', f->precision - f->slen);
-    rz_buf_add(buf, s, f->slen);
+    if (!(f->precision == 0 && *s == '0'))
+	rz_buf_add(buf, s, f->slen);
     if (f->minus && padding > 0)
 	rz_buf_fill(buf, ' ', padding);
 }
