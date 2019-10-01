@@ -1263,6 +1263,18 @@ START_TEST(test_precision_xX_zero_arg)
 }
 END_TEST
 
+START_TEST(test_precision_xX_sharp_zero_arg)
+{
+  char buffer[128];
+  const char *format = "[%#.x|%#.0x|%#.X|%#.0X]";
+  unsigned a = 0;
+  int actual_result = ft_printf(format, a, a, a, a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, a, a, a, a);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 START_TEST(test_precision_p_smaller)
 {
   char buffer[128];
@@ -3253,6 +3265,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_precision, test_precision_X_dot);
   tcase_add_test(tc_precision, test_precision_X_smaller);
   tcase_add_test(tc_precision, test_precision_xX_zero_arg);
+  tcase_add_test(tc_precision, test_precision_xX_sharp_zero_arg);
 
   tcase_add_test(tc_precision, test_precision_p_smaller);
   tcase_add_test(tc_precision, test_precision_p_equal);
