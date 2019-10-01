@@ -47,13 +47,12 @@ void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
     }
     else
     {
-	f->argzero = (a == 0);
 	if (f->size == size_hh)
-	    f->slen = rz_ultoa(str_rep, (unsigned char) a, f->type);
+	    f->slen = rz_ultoa(str_rep, f, (unsigned char) a);
 	else if (f->size == size_h)
-	    f->slen = rz_ultoa(str_rep, (unsigned short) a, f->type);
+	    f->slen = rz_ultoa(str_rep, f, (unsigned short) a);
 	else
-	    f->slen = rz_ultoa(str_rep, a, f->type);
+	    f->slen = rz_ultoa(str_rep, f, a);
     }
     rz_print_type(buf, f, s);
 }

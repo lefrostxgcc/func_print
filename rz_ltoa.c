@@ -32,19 +32,20 @@ static int rz_digit_count(unsigned long n, unsigned base)
     return (count);
 }
 
-int rz_ultoa(char *buf, unsigned long n, t_rz_arg_type type)
+int rz_ultoa(char *buf, t_rz_arg *f, unsigned long n)
 {
     int base;
     int buf_len;
 
-    base = rz_type_base(type);
+    f->argzero = (n == 0);
+    base = rz_type_base(f->type);
     buf_len = rz_digit_count(n, base);
     buf[0] = '0';
     buf += buf_len;
     *buf-- = '\0';
     while (n != 0)
     {
-	*buf-- = rz_digit_to_char(n % base, type);
+	*buf-- = rz_digit_to_char(n % base, f->type);
 	n /= base;
     }
     return (buf_len);
@@ -53,7 +54,8 @@ int rz_ultoa(char *buf, unsigned long n, t_rz_arg_type type)
 int rz_ltoa(char *buf, t_rz_arg *f, long n)
 {
     int buf_len;
-    
+
+    f->argzero = (n == 0);
     if (n == (long) 0x8000000000000000L)
     {
 	f->negative = 1;
@@ -70,6 +72,6 @@ int rz_ltoa(char *buf, t_rz_arg *f, long n)
 	buf++;
 	buf_len++;
     }
-    buf_len += rz_ultoa(buf, n, type_d);
+    buf_len += rz_ultoa(buf, f, n);
     return (buf_len);
 }

@@ -44,7 +44,7 @@ typedef struct s_rz_buf t_rz_buf;
 typedef struct s_rz_arg t_rz_arg;
 
 int rz_ltoa(char *res, t_rz_arg *f, long number);
-int rz_ultoa(char *res, unsigned long number, t_rz_arg_type flag);
+int rz_ultoa(char *res, t_rz_arg *f, unsigned long number);
 int rz_ftoa(char *res, t_rz_arg *info, long double arg);
 void rz_buf_flush(t_rz_buf *buf);
 void rz_buf_fill(t_rz_buf *buf, char ch, int count);

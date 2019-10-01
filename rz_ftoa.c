@@ -34,7 +34,7 @@ int rz_ftoa(char *buf, t_rz_arg *arg, long double n)
       buf[buf_len++] = '.';
     if (arg->precision > 0)
     {
-	f_len = rz_ultoa(buf + buf_len, f, arg->type);
+      f_len = rz_ultoa(buf + buf_len, arg, f);
 	buf_len += f_len;
 	zero_count = arg->precision - f_len;
 	if (zero_count > 0)
