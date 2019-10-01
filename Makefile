@@ -11,8 +11,9 @@ FILES := ft_printf.c \
         rz_cast.c    \
 	rz_utility.c \
         rz_print_type.c \
-        rz_print_signed.c \
-        rz_print_unsigned.c \
+        rz_print_csu.c \
+        rz_print_dif.c \
+	rz_print_oxp.c \
 	rz_ft.c
 
 OBJS = $(FILES:.c=.o)
