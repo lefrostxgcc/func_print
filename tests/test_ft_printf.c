@@ -3136,6 +3136,17 @@ START_TEST(test_limits_min_uchar)
 }
 END_TEST
 
+START_TEST(test_other_sharp_o_precision)
+{
+  char buffer[256];
+  const char *format = "test%#.4o et %02o %0#14.0o!!";
+  int actual_result = ft_printf(format, 012, 036, 12587499);
+  int expected_result = snprintf(buffer, sizeof buffer, format, 012, 036, 12587499);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3152,6 +3163,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_error_type;
   TCase *tc_multiflags;
   TCase *tc_limits;
+  TCase *tc_other;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -3491,6 +3503,10 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_limits, test_limits_min_char);
   tcase_add_test(tc_limits, test_limits_max_uchar);
   tcase_add_test(tc_limits, test_limits_min_uchar);
+
+  tc_other = tcase_create("Other");
+  tcase_add_checked_fixture(tc_other, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_other, test_other_sharp_o_precision);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -3505,6 +3521,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_error_type);
   suite_add_tcase(s, tc_multiflags);
   suite_add_tcase(s, tc_limits);
+  suite_add_tcase(s, tc_other);
 
   return s;
 }
