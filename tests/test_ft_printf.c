@@ -81,6 +81,17 @@ START_TEST(test_single_param_cstring_empty)
 }
 END_TEST
 
+START_TEST(test_single_param_cstring_null)
+{
+  char buffer[128];
+  const char *format = "%s";
+  const char *a = NULL;
+  int actual_result = ft_printf(format, a);
+  ck_assert_int_eq(actual_result, 0);
+  ck_assert_pstr_eq(get_write_buf(), "");
+}
+END_TEST
+
 START_TEST(test_single_format_param_percent)
 {
   char buffer[128];
@@ -3039,6 +3050,7 @@ Suite *ft_printf_suite(void)
   tcase_add_checked_fixture(tc_single_param, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_single_param, test_single_param_char);
   tcase_add_test(tc_single_param, test_single_param_cstring);
+  tcase_add_test(tc_single_param, test_single_param_cstring_null);
   tcase_add_test(tc_single_param, test_single_param_cstring_empty);
   tcase_add_test(tc_single_param, test_single_param_d);
   tcase_add_test(tc_single_param, test_single_param_i);

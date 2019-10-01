@@ -58,6 +58,8 @@ size_t rz_strlen(const char *s)
     int	len;
     
     len = 0;
+    if (!s)
+	return (0);
     while (*s != '\0')
     {
 	s++;
