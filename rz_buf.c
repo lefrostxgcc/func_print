@@ -18,10 +18,11 @@ void rz_buf_fill(t_rz_buf *buf, char ch, int count)
     while (count > 0)
     {
 	free_count = (sizeof (buf->data)) - buf->pos;
-	if (count > free_count)
+	if (count >= free_count)
 	{
 	    count -= free_count;
 	    rz_memset(buf->data + buf->pos, ch, free_count);
+	    buf->pos += free_count;
 	    rz_buf_flush(buf);
 	}
 	else
@@ -40,22 +41,24 @@ void rz_buf_add(t_rz_buf *buf, const char *s, int s_len)
     int s_left;
 
     s_pos = 0;
-    while (s_pos < s_len)
+    s_left = s_len;
+    while (s_left > 0)
     {
 	b_left = (sizeof (buf->data)) - buf->pos;
-	s_left = s_len - s_pos;
-	if (s_left > b_left)
+	if (s_left >= b_left)
 	{
-	    s_left -= b_left;
 	    rz_memcpy(buf->data + buf->pos, s + s_pos, b_left);
+	    buf->pos += b_left;
 	    rz_buf_flush(buf);
 	    s_pos += b_left;
+	    s_left -= b_left;
 	}
 	else
 	{
 	    rz_memcpy(buf->data + buf->pos, s + s_pos, s_left);
 	    buf->pos += s_left;
 	    s_pos += s_left;
+	    s_left = 0;
 	}
     }
 }
