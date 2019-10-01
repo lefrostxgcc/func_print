@@ -1347,6 +1347,15 @@ START_TEST(test_precision_p_greater)
 }
 END_TEST
 
+START_TEST(test_precision_p_zero_arg)
+{
+  const char *format = "[%.p|%.0p]";
+  int actual_result = ft_printf(format, NULL, NULL);
+  ck_assert_pstr_eq(get_write_buf(), "[0x|0x]");
+  ck_assert_int_eq(actual_result, 7);
+}
+END_TEST
+
 START_TEST(test_minus_s)
 {
   char buffer[128];
@@ -3285,6 +3294,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_precision, test_precision_p_zero);
   tcase_add_test(tc_precision, test_precision_p_dot);
   tcase_add_test(tc_precision, test_precision_p_greater);
+  tcase_add_test(tc_precision, test_precision_p_zero_arg);
 
   tc_minus = tcase_create("Minus");
   tcase_add_checked_fixture(tc_minus, setup_ft_printf, teardown_ft_printf);
