@@ -1,5 +1,4 @@
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 static unsigned rz_type_base(t_rz_arg_type type)
 {
@@ -59,7 +58,7 @@ int rz_ltoa(char *buf, t_rz_arg *f, long n)
     {
 	f->negative = 1;
 	buf[0] = '\0';
-	ft_strcpy(buf, "-9223372036854775808");
+	rz_strcpy(buf, "-9223372036854775808");
 	return (sizeof("-9223372036854775808") - 1);
     }
     buf_len = 0;

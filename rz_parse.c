@@ -1,5 +1,4 @@
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 static t_rz_arg_size rz_read_size(const char **fmt)
 {
@@ -86,7 +85,7 @@ void rz_parse_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
 {
     const char *percent;
   
-    ft_memset(f, 0, sizeof *f);
+    rz_memset(f, 0, sizeof *f);
     f->cast = cast_none;
     if (**fmt != '%')
       return;

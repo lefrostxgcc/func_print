@@ -1,5 +1,4 @@
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long a)
 {
@@ -38,7 +37,7 @@ void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
     if (f->type == type_s)
     {
 	s = (const char *) a;
-	f->slen = ft_strlen(s);
+	f->slen = rz_strlen(s);
     }
     else if (f->type == type_c)
     {

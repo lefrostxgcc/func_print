@@ -1,22 +1,22 @@
 CC = gcc
 CFLAGS = -DUNIT_TEST `pkg-config --cflags check`
 
-HEADERS := ../ft_printf.h ../rz_numtostr.h rz_write.h
-SRCS_PRINTF := test_ft_printf.c rz_write.c
+HEADERS := ../ft_printf.h rz_write.h
+SRCS := test_ft_printf.c rz_write.c
 LDADD := `pkg-config --libs check`
 
-OBJS_PRINTF = $(SRCS_PRINTF:.c=.o)
+OBJS = $(SRCS:.c=.o)
 
-TARGET_PRINTF := test_ft_printf
+NAME := test_ft_printf
 LIBFTPRINTF := ../libftprintf.a
 
 .PHONY: all clean fclean re force
 
-all: $(TARGET_PRINTF)
+all: $(NAME)
 
 vpath ..
 
-$(TARGET_PRINTF): $(OBJS_PRINTF) $(LIBFTPRINTF)
+$(NAME): $(OBJS) $(LIBFTPRINTF)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDADD)
 
 $(LIBFTPRINTF): force
@@ -27,10 +27,11 @@ force:
 $(OBJS) : $(HEADERS)
 
 clean:
-	-rm -rf $(OBJS_PRINTF)
+	-rm -rf $(OBJS)
+	$(MAKE) -C .. clean
 
 fclean: clean
-	-rm -f $(TARGET_PRINTF)
+	-rm -f $(NAME)
 	$(MAKE) -C .. fclean
 
 re: fclean all

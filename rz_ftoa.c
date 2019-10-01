@@ -1,17 +1,5 @@
 #include "rz_printf.h"
 
-static unsigned long rz_pow(int base, int exp)
-{
-    unsigned long result;
-    int i;
-
-    result = 1;
-    i = 0;
-    while (i++ < exp)
-	result *= base;
-    return (result);
-}
-
 static unsigned long rz_modfl(long double n, int precision, long *i)
 {
     unsigned long f;

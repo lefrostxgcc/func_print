@@ -1,5 +1,6 @@
 #ifndef RZ_PRINTF_H
 # define RZ_PRINTF_H
+#include <unistd.h>
 
 enum e_rz_cast_type {cast_none, cast_percent, cast_i, cast_u, cast_l,
 		     cast_ul, cast_double, cast_long_double};
@@ -66,5 +67,11 @@ void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_xp(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_dif(t_rz_buf *buf, t_rz_arg *f, const char *s);
+int rz_isdigit(int c);
+void *rz_memcpy(void *dst, const void *src, size_t n);
+char *rz_strcpy(char *dst, const char *src);
+void *rz_memset(void *b, int c, size_t len);
+size_t rz_strlen(const char *s);
+unsigned long rz_pow(int base, int exp);
 
 #endif

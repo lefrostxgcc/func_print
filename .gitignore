@@ -4,5 +4,3 @@
 *.a
 *.gch
 tests/test_ft_printf
-tests/test_ltoa
-tests/test_ultoa

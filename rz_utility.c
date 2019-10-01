@@ -1,5 +1,4 @@
 #include "rz_printf.h"
-#include "libft/libft.h"
 
 long rz_tern_l(int expression, long a, long b)
 {
@@ -26,7 +25,7 @@ int rz_read_integer_number(const char **s)
     number = 0;
     start = *s;
     end = start;
-    while (ft_isdigit(*end))
+    while (rz_isdigit(*end))
 	end++;
     if (start == end)
       return (-1);
@@ -37,4 +36,16 @@ int rz_read_integer_number(const char **s)
 	start++;
     }
     return (number);
+}
+
+unsigned long rz_pow(int base, int exp)
+{
+    unsigned long result;
+    int i;
+
+    result = 1;
+    i = 0;
+    while (i++ < exp)
+	result *= base;
+    return (result);
 }
