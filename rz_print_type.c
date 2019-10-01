@@ -73,8 +73,10 @@ void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_print_type_u(buf, f, s);
     else if (f->type == type_o)
 	rz_print_type_o(buf, f, s);
-    else if (f->type == type_x || f->type == type_X || f->type == type_p)
-	rz_print_type_xp(buf, f, s);
+    else if (f->type == type_x || f->type == type_X)
+	rz_print_type_x(buf, f, s);
+    else if (f->type == type_p)
+	rz_print_type_p(buf, f, s);
     else if (f->type == type_d || f->type == type_i)
 	rz_print_type_di(buf, f, s);
     else if (f->type == type_f)
