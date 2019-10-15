@@ -19,7 +19,7 @@ void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int width;
     int spaces;
 
-    if (f->argzero && f->precision >= 0 && f->precision <= 6)
+    if (f->argzero && f->precision >= 0 && f->precision < 6)
 	width = 0;    
     else if (f->precision >= 0 && f->precision < f->slen)
 	width = f->precision;
