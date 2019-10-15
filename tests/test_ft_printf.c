@@ -3597,6 +3597,17 @@ START_TEST(test_nullchar_width_6_pre6)
 }
 END_TEST
 
+START_TEST(test_nullint_width5_pre0)
+{
+  char buffer[64];
+  const char *format = "%5.0i";
+  int ac = ft_printf(format, 0);
+  int ex = snprintf(buffer, sizeof buffer, format, 0);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3616,6 +3627,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_other;
   TCase *tc_nulls;
   TCase *tc_nullchar;
+  TCase *tc_nullint;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -4006,6 +4018,10 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_nullchar, test_nullchar_width_minus6_pre1);
   tcase_add_test(tc_nullchar, test_nullchar_width_3_pre6);
   tcase_add_test(tc_nullchar, test_nullchar_width_6_pre6);
+
+  tc_nullint = tcase_create("nullint");
+  tcase_add_checked_fixture(tc_nullint, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_nullint, test_nullint_width5_pre0);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -4023,6 +4039,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_other);
   suite_add_tcase(s, tc_nulls);
   suite_add_tcase(s, tc_nullchar);
+  suite_add_tcase(s, tc_nullint);
 
   return s;
 }
