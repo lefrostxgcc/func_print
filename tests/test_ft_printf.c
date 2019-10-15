@@ -3707,6 +3707,17 @@ START_TEST(test_nullu_width5_predot)
 }
 END_TEST
 
+START_TEST(test_nullu_width_minus5_pre0)
+{
+  char buffer[64];
+  const char *format = "%-5.0u";
+  int ac = ft_printf(format, 0);
+  int ex = snprintf(buffer, sizeof buffer, format, 0);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4134,6 +4145,7 @@ Suite *ft_printf_suite(void)
   tcase_add_checked_fixture(tc_nullu, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_nullu, test_nullu_width5_pre0);
   tcase_add_test(tc_nullu, test_nullu_width5_predot);
+  tcase_add_test(tc_nullu, test_nullu_width_minus5_pre0);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
