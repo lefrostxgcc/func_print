@@ -54,7 +54,7 @@ void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
 
 void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *s)
 {
-    if (s == 0 || f->slen <= 0)
+    if ((s == 0 || f->slen <= 0) && f->width < 0)
 	return;
     if (f->negative)
     {
