@@ -4,3 +4,4 @@
 *.a
 *.gch
 tests/test_ft_printf
+pft/
