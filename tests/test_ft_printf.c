@@ -3223,6 +3223,17 @@ START_TEST(test_nulls_width2)
 }
 END_TEST
 
+START_TEST(test_nulls_width_minus32)
+{
+  char buffer[256];
+  const char *format = "%-32s";
+  int ac = ft_printf(format, NULL);
+  int ex = snprintf(buffer, sizeof buffer, format, NULL);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3594,6 +3605,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_nulls, test_nulls_fmt_single);
   tcase_add_test(tc_nulls, test_nulls_width32);
   tcase_add_test(tc_nulls, test_nulls_width2);
+  tcase_add_test(tc_nulls, test_nulls_width_minus32);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
