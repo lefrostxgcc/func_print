@@ -19,6 +19,10 @@ static void rz_printf(t_rz_buf *buf, const char *fmt, va_list ap)
 	    rz_print_as_long(buf, &f, va_arg(ap, long));
 	else if (f.cast == cast_ul)
 	    rz_print_as_ulong(buf, &f, va_arg(ap, unsigned long));
+	else if (f.cast == cast_s)
+	    rz_print_as_s(buf, &f, va_arg(ap, const char *));
+	else if (f.cast == cast_p)
+	    rz_print_as_p(buf, &f, va_arg(ap, void *));
 	else if (f.cast == cast_double)
 	    rz_print_as_ldouble(buf, &f, va_arg(ap, double));
 	else if (f.cast == cast_long_double)

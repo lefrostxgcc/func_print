@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 enum e_rz_cast_type {cast_none, cast_percent, cast_i, cast_u, cast_l,
-		     cast_ul, cast_double, cast_long_double};
+		     cast_ul, cast_p, cast_s, cast_double, cast_long_double};
 enum e_rz_arg_type {type_none, type_c, type_s, type_p, type_d, type_i,
 		    type_u, type_o, type_x, type_X, type_f,
 		    type_percent};
@@ -58,11 +58,14 @@ int rz_number(t_rz_arg_type t);
 void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long arg);
 void rz_print_as_ldouble(t_rz_buf *buf, t_rz_arg *f, long double arg);
 void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long arg);
+void rz_print_as_p(t_rz_buf *buf, t_rz_arg *f, void *p);
+void rz_print_as_s(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **s);
 long rz_tern_l(int expression, long a, long b);
 void *rz_tern_p(int expression, void *a, void *b);
 void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *arg);
-void rz_print_type_cs(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_c(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_x(t_rz_buf *buf, t_rz_arg *f, const char *s);

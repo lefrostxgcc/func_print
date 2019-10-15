@@ -34,12 +34,7 @@ void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
     const char *s;
 
     s = str_rep;
-    if (f->type == type_s)
-    {
-	s = (const char *) a;
-	f->slen = rz_strlen(s);
-    }
-    else if (f->type == type_c)
+    if (f->type == type_c)
     {
 	str_rep[0] = a;
 	str_rep[1] = '\0';
@@ -66,8 +61,10 @@ void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	f->slen--;
 	s++;
     }
-    if (f->type == type_c || f->type == type_s)
-	rz_print_type_cs(buf, f, s);
+    if (f->type == type_c)
+	rz_print_type_c(buf, f, s);
+    else if (f->type == type_s)
+	rz_print_type_s(buf, f, s);
     else if (f->type == type_u)
 	rz_print_type_u(buf, f, s);
     else if (f->type == type_o)

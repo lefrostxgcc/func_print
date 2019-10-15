@@ -14,6 +14,7 @@ FILES := ft_printf.c \
         rz_print_csu.c \
         rz_print_dif.c \
 	rz_print_oxp.c \
+	rz_print_as_ps.c \
 	rz_ft.c
 
 OBJS = $(FILES:.c=.o)

@@ -1,11 +1,25 @@
 #include "rz_printf.h"
 
-void rz_print_type_cs(t_rz_buf *buf, t_rz_arg *f, const char *s)
+void rz_print_type_c(t_rz_buf *buf, t_rz_arg *f, const char *s)
 {
     int width;
     int spaces;
 
-    if (f->type == type_s && f->precision >= 0 && f->precision < f->slen)
+    width = f->slen;
+    spaces = f->width - width;
+    if (!f->minus && spaces > 0)
+	rz_buf_fill(buf, ' ', spaces);
+    rz_buf_add(buf, s, width);
+    if (f->minus && spaces > 0)
+	rz_buf_fill(buf, ' ', spaces);
+}
+
+void rz_print_type_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    int width;
+    int spaces;
+
+    if (f->precision >= 0 && f->precision < f->slen)
 	width = f->precision;
     else
 	width = f->slen;

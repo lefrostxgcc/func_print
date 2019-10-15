@@ -39,8 +39,10 @@ t_rz_cast_type rz_select_cast(const t_rz_arg *f)
     else if (f->type == type_u || f->type == type_o ||
 	     f->type == type_x || f->type == type_X || f->type == type_c)
 	return (cast_u);
-    else if (f->type == type_s || f->type == type_p)
-	return (cast_ul);
+    else if (f->type == type_p)
+	return (cast_p);
+    else if (f->type == type_s)
+	return (cast_s);
     else if (f->type == type_percent)
 	return (cast_percent);
     return (cast_none);
