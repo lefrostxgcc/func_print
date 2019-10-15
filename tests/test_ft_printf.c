@@ -3190,6 +3190,17 @@ START_TEST(test_nulls_single)
 }
 END_TEST
 
+START_TEST(test_nulls_fmt_single)
+{
+  char buffer[256];
+  const char *format = "hello, %s.";
+  int ac = ft_printf(format, NULL);
+  int ex = snprintf(buffer, sizeof buffer, format, NULL);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3558,6 +3569,7 @@ Suite *ft_printf_suite(void)
   tc_nulls = tcase_create("NULL %s");
   tcase_add_checked_fixture(tc_nulls, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_nulls, test_nulls_single);
+  tcase_add_test(tc_nulls, test_nulls_fmt_single);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
