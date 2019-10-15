@@ -41,6 +41,8 @@ void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s)
 
     ch = rz_tern_l(!f->minus && f->zero && f->precision < 0, '0', ' ');
     width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
+    if (f->argzero && f->precision == 0 && f->width > 0)
+      width--;
     padding = f->width - width;
     if (!f->minus && padding > 0)
 	rz_buf_fill(buf, ch, padding);
