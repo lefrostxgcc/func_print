@@ -4018,6 +4018,16 @@ START_TEST(test_percent_width5_zero)
 }
 END_TEST
 
+START_TEST(test_percent_width5_zero_pre3)
+{
+  const char *format = "%05.3%";
+  int actual_result = ft_printf(format);
+  int expected_result = 5;
+  ck_assert_pstr_eq(get_write_buf(), "0000%");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4485,6 +4495,7 @@ Suite *ft_printf_suite(void)
   tc_percent = tcase_create("Percent");
   tcase_add_checked_fixture(tc_percent, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_percent, test_percent_width5_zero);
+  tcase_add_test(tc_percent, test_percent_width5_zero_pre3);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
