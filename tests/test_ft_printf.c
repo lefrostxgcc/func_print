@@ -3755,6 +3755,17 @@ START_TEST(test_nullp)
 }
 END_TEST
 
+START_TEST(test_osharp)
+{
+  char buffer[128];
+  const char *format = "|%#8.5o|%#-8.5o|%#08.5o|%#0-8.5o|";
+  int ac = ft_printf(format, 34, 34, 34, 34);
+  int ex = snprintf(buffer, sizeof buffer, format, 34, 34, 34, 34);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3778,6 +3789,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_nullu;
   TCase *tc_nullo;
   TCase *tc_nullp;
+  TCase *tc_osharp;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -4194,6 +4206,10 @@ Suite *ft_printf_suite(void)
   tc_nullp = tcase_create("nullp");
   tcase_add_checked_fixture(tc_nullp, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_nullp, test_nullp);
+
+  tc_osharp = tcase_create("osharp");
+  tcase_add_checked_fixture(tc_osharp, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_osharp, test_osharp);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -4215,6 +4231,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_nullu);
   suite_add_tcase(s, tc_nullo);
   suite_add_tcase(s, tc_nullp);
+  suite_add_tcase(s, tc_osharp);
 
   return s;
 }

@@ -88,7 +88,7 @@ void rz_print_type_o(t_rz_buf *buf, t_rz_arg *f, const char *s)
     width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
     if (f->argzero && f->precision == 0 && f->width > 0 && !f->sharp)
 	width--;
-    if (f->sharp && !f->argzero)
+    if (f->sharp && !f->argzero && f->precision <= f->slen)
 	width++;
     padding = f->width - width;
     if (!f->minus && padding > 0)
