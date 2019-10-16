@@ -30,6 +30,8 @@ int rz_ftoa(char *buf, t_rz_arg *arg, long double n)
     int zero_count;
     int zero_pre;
 
+    if (n < 0)
+	arg->negative = 1;
     f = rz_modfl(n, arg->precision, &i);
     buf_len = rz_ltoa(buf, arg, i);
     if (arg->precision > 0 || arg->sharp)

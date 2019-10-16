@@ -64,7 +64,7 @@ int rz_ltoa(char *buf, t_rz_arg *f, long n)
 	return (sizeof("-9223372036854775808") - 1);
     }
     buf_len = 0;
-    if (n < 0)
+    if (n < 0 || f->negative)
     {
 	f->negative = 1;
 	n = -n;
