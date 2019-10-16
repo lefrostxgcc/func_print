@@ -3,20 +3,25 @@
 static unsigned long rz_modfl(long double n, int precision, long *i)
 {
     unsigned long f;
+    unsigned long pre_pow;
 
     *i = n;
     n -= *i;
     if (n < 0)
 	n = -n;
-    if (precision == 0 && n >= 0.5)
-	*i += rz_tern_l(*i > 0, 1, -1);
     if (precision > 18)
 	precision = 18;
-    n *= rz_pow(10, precision);
+    pre_pow = rz_pow(10, precision);
+    n *= pre_pow;
     f = n;
     n *= 10;
     if (((unsigned long) n) % 10 >= 5)
 	f++;
+    if (f >= pre_pow)
+    {
+	*i += rz_tern_l(*i > 0, 1, -1);
+	f = 0;
+    }
     return (f);
 }
 

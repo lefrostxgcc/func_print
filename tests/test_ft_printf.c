@@ -3096,9 +3096,9 @@ START_TEST(test_limits_max_char)
 {
   char buffer[256];
   const char *format = "%hhd %hhi";
-  long a = 127;
-  int actual_result = ft_printf(format, a, a);
-  int expected_result = snprintf(buffer, sizeof buffer, format, a, a);
+  int a = 127;
+  int actual_result = ft_printf(format, (char)a, (char)a);
+  int expected_result = snprintf(buffer, sizeof buffer, format, (char)a, (char)a);
   ck_assert_pstr_eq(get_write_buf(), buffer);
   ck_assert_int_eq(actual_result, expected_result);
 }
@@ -3867,6 +3867,21 @@ START_TEST(test_zerofloat7)
 }
 END_TEST
 
+START_TEST(test_zerofloat8)
+{
+  char buffer[128];
+  const char *format = "|%f|%f|%Lf|%Lf|";
+  double a = 3.9999999;
+  double b = -5.9999999;
+  long double c = 3.9999999l;
+  long double d = -5.9999999l;
+  int ac = ft_printf(format, a, b, c, d);
+  int ex = snprintf(buffer, sizeof buffer, format, a, b, c, d);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4322,6 +4337,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_zerofloat, test_zerofloat5);
   tcase_add_test(tc_zerofloat, test_zerofloat6);
   tcase_add_test(tc_zerofloat, test_zerofloat7);
+  tcase_add_test(tc_zerofloat, test_zerofloat8);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
