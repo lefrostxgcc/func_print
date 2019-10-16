@@ -1351,8 +1351,8 @@ START_TEST(test_precision_p_zero_arg)
 {
   const char *format = "[%.p|%0.p]";
   int actual_result = ft_printf(format, NULL, NULL);
-  ck_assert_pstr_eq(get_write_buf(), "[0x0|0x0]");
-  ck_assert_int_eq(actual_result, 9);
+  ck_assert_pstr_eq(get_write_buf(), "[0x|0x]");
+  ck_assert_int_eq(actual_result, 7);
 }
 END_TEST
 
@@ -1360,8 +1360,8 @@ START_TEST(test_precision_p_sharp_zero_arg)
 {
   const char *format = "[%#.p|%#.0p]";
   int actual_result = ft_printf(format, NULL, NULL);
-  ck_assert_pstr_eq(get_write_buf(), "[0x0|0x0]");
-  ck_assert_int_eq(actual_result, 9);
+  ck_assert_pstr_eq(get_write_buf(), "[0x|0x]");
+  ck_assert_int_eq(actual_result, 7);
 }
 END_TEST
 
@@ -3730,10 +3730,10 @@ END_TEST
 
 START_TEST(test_nullp)
 {
-  const char *format = "|%p|%5p|";
-  int ac = ft_printf(format, NULL, NULL);
-  ck_assert_pstr_eq(get_write_buf(), "|0x0|  0x0|");
-  ck_assert_int_eq(ac, 11);
+  const char *format = "|%p|%5p|%.p|";
+  int ac = ft_printf(format, NULL, NULL, NULL);
+  ck_assert_pstr_eq(get_write_buf(), "|0x0|  0x0|0x|");
+  ck_assert_int_eq(ac, 14);
 }
 END_TEST
 
