@@ -78,19 +78,3 @@ void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *s)
     else if (f->type == type_f)
 	rz_print_type_f(buf, f, s);
 }
-
-void rz_print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
-{
-    const char *p;
-
-    if (f->cast == cast_percent)
-	rz_buf_add(buf, "%", 1);
-    else
-    {
-	p = *fmt;
-	while (*p && *p != '%')
-	    p++;
-	rz_buf_add(buf, *fmt, p - *fmt);
-	*fmt = p;
-    }
-}
