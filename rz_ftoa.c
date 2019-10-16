@@ -4,6 +4,7 @@ static unsigned long rz_modfl(long double n, int precision, long *i)
 {
     unsigned long f;
     unsigned long pre_pow;
+    long double tn;
 
     *i = n;
     n -= *i;
@@ -14,8 +15,9 @@ static unsigned long rz_modfl(long double n, int precision, long *i)
     pre_pow = rz_pow(10, precision);
     n *= pre_pow;
     f = n;
-    n *= 10;
-    if (((unsigned long) n) % 10 >= 5)
+    tn = n - (unsigned long) n;
+    tn *= 10;
+    if (((unsigned long) tn) % 10 >= 5)
 	f++;
     if (f >= pre_pow)
     {
