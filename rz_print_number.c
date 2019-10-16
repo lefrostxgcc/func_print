@@ -77,4 +77,6 @@ void rz_print_type(t_rz_buf *buf, t_rz_arg *f, const char *s)
 	rz_print_type_di(buf, f, s);
     else if (f->type == type_f)
 	rz_print_type_f(buf, f, s);
+    else if (f->type == type_percent)
+	rz_print_percent(buf, f, s);
 }

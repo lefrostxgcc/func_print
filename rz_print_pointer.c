@@ -33,7 +33,10 @@ void rz_print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
     const char *p;
 
     if (f->cast == cast_percent)
-	rz_buf_add(buf, "%", 1);
+    {
+	f->slen = 1;
+	rz_print_type(buf, f, "%");
+    }
     else
     {
 	p = *fmt;

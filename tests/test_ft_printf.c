@@ -4008,6 +4008,16 @@ START_TEST(test_prefix_percent_df2)
 }
 END_TEST
 
+START_TEST(test_percent_width5_zero)
+{
+  const char *format = "%05%";
+  int actual_result = ft_printf(format);
+  int expected_result = 5;
+  ck_assert_pstr_eq(get_write_buf(), "0000%");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4033,6 +4043,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_nullp;
   TCase *tc_osharp;
   TCase *tc_zerofloat;
+  TCase *tc_percent;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -4470,6 +4481,10 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_error_type, test_prefix_percent_d1);
   tcase_add_test(tc_error_type, test_prefix_percent_df1);
   tcase_add_test(tc_error_type, test_prefix_percent_df2);
+
+  tc_percent = tcase_create("Percent");
+  tcase_add_checked_fixture(tc_percent, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_percent, test_percent_width5_zero);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -4481,7 +4496,6 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_zero);
   suite_add_tcase(s, tc_float);
   suite_add_tcase(s, tc_space);
-  suite_add_tcase(s, tc_error_type);
   suite_add_tcase(s, tc_multiflags);
   suite_add_tcase(s, tc_limits);
   suite_add_tcase(s, tc_other);
@@ -4493,6 +4507,8 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_nullp);
   suite_add_tcase(s, tc_osharp);
   suite_add_tcase(s, tc_zerofloat);
+  suite_add_tcase(s, tc_error_type);
+  suite_add_tcase(s, tc_percent);
 
   return s;
 }

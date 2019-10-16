@@ -53,3 +53,19 @@ void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s)
     if (f->minus && padding > 0)
 	rz_buf_fill(buf, ' ', padding);
 }
+
+void rz_print_percent(t_rz_buf *buf, t_rz_arg *f, const char *s)
+{
+    int width;
+    int spaces;
+    char ch;
+
+    ch = rz_tern_l(!f->minus && f->zero, '0', ' ');
+    width = f->slen;
+    spaces = f->width - width;
+    if (!f->minus && spaces > 0)
+	rz_buf_fill(buf, ch, spaces);
+    rz_buf_add(buf, s, width);
+    if (f->minus && spaces > 0)
+	rz_buf_fill(buf, ' ', spaces);
+}

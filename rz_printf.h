@@ -69,6 +69,7 @@ void rz_print_type_x(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_p(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_di(t_rz_buf *buf, t_rz_arg *f, const char *s);
 void rz_print_type_f(t_rz_buf *buf, t_rz_arg *f, const char *s);
+void rz_print_percent(t_rz_buf *buf, t_rz_arg *f, const char *s);
 int rz_isdigit(int c);
 void *rz_memcpy(void *dst, const void *src, size_t n);
 char *rz_strcpy(char *dst, const char *src);
