@@ -3992,6 +3992,17 @@ START_TEST(test_prefix_percent_d1)
 }
 END_TEST
 
+START_TEST(test_prefix_percent_df1)
+{
+  char buffer[128];
+  const char *format = "hello % %d %#0+ - %%f";
+  int actual_result = ft_printf(format, 5, 6.8);
+  int expected_result = 18;
+  ck_assert_pstr_eq(get_write_buf(), "hello %d %6.800000");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4452,6 +4463,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_error_type, test_prefix_four_percent_d);
   tcase_add_test(tc_error_type, test_prefix_double_percent_d);
   tcase_add_test(tc_error_type, test_prefix_percent_d1);
+  tcase_add_test(tc_error_type, test_prefix_percent_df1);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
