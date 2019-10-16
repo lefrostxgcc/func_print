@@ -3368,56 +3368,46 @@ END_TEST
 
 START_TEST(test_nulls_width3_pre1)
 {
-  char buffer[256];
   const char *format = "%3.1s";
   int ac = ft_printf(format, NULL);
-  int ex = snprintf(buffer, sizeof buffer, format, NULL);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(ac, ex);
+  ck_assert_pstr_eq(get_write_buf(), "  (");
+  ck_assert_int_eq(ac, 3);
 }
 END_TEST
 
 START_TEST(test_nulls_width9_pre1)
 {
-  char buffer[256];
   const char *format = "%9.1s";
   int ac = ft_printf(format, NULL);
-  int ex = snprintf(buffer, sizeof buffer, format, NULL);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(ac, ex);
+  ck_assert_pstr_eq(get_write_buf(), "        (");
+  ck_assert_int_eq(ac, 9);
 }
 END_TEST
 
 START_TEST(test_nulls_width_minus3_pre1)
 {
-  char buffer[256];
   const char *format = "%-3.1s";
   int ac = ft_printf(format, NULL);
-  int ex = snprintf(buffer, sizeof buffer, format, NULL);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(ac, ex);
+  ck_assert_pstr_eq(get_write_buf(), "(  ");
+  ck_assert_int_eq(ac, 3);
 }
 END_TEST
 
 START_TEST(test_nulls_width_minus9_pre1)
 {
-  char buffer[256];
   const char *format = "%-9.1s";
   int ac = ft_printf(format, NULL);
-  int ex = snprintf(buffer, sizeof buffer, format, NULL);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(ac, ex);
+  ck_assert_pstr_eq(get_write_buf(), "(        ");
+  ck_assert_int_eq(ac, 9);
 }
 END_TEST
 
 START_TEST(test_nulls_width_minus6_pre1)
 {
-  char buffer[256];
   const char *format = "%-6.1s";
   int ac = ft_printf(format, NULL);
-  int ex = snprintf(buffer, sizeof buffer, format, NULL);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(ac, ex);
+  ck_assert_pstr_eq(get_write_buf(), "(     ");
+  ck_assert_int_eq(ac, 6);
 }
 END_TEST
 
@@ -3473,6 +3463,15 @@ START_TEST(test_nulls_width_minus10_pre8)
   int ex = snprintf(buffer, sizeof buffer, format, NULL);
   ck_assert_pstr_eq(get_write_buf(), buffer);
   ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
+START_TEST(test_nulls_pre03)
+{
+  const char *format = "%.03s";
+  int ac = ft_printf(format, NULL);
+  ck_assert_pstr_eq(get_write_buf(), "(nu");
+  ck_assert_int_eq(ac, 3);
 }
 END_TEST
 
@@ -4471,6 +4470,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_nulls, test_nulls_width6_pre6);
   tcase_add_test(tc_nulls, test_nulls_width_minus3_pre8);
   tcase_add_test(tc_nulls, test_nulls_width_minus10_pre8);
+  tcase_add_test(tc_nulls, test_nulls_pre03);
 
   tc_nullchar = tcase_create("nullchar");
   tcase_add_checked_fixture(tc_nullchar, setup_ft_printf, teardown_ft_printf);
