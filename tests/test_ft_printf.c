@@ -3823,6 +3823,20 @@ START_TEST(test_zerofloat4)
 }
 END_TEST
 
+START_TEST(test_zerofloat5)
+{
+  char buffer[128];
+  const char *format = "|%.0f|%.1f|%.3f|%.7f|%.7f|";
+  double a = -0.00032;
+  double b = 23.00041;
+  double c = 0.0000039;
+  int ac = ft_printf(format, a, a, a, b);
+  int ex = snprintf(buffer, sizeof buffer, format, a, a, a, b);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4275,6 +4289,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_zerofloat, test_zerofloat2);
   tcase_add_test(tc_zerofloat, test_zerofloat3);
   tcase_add_test(tc_zerofloat, test_zerofloat4);
+  tcase_add_test(tc_zerofloat, test_zerofloat5);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
