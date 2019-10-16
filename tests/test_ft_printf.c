@@ -3766,6 +3766,20 @@ START_TEST(test_osharp)
 }
 END_TEST
 
+START_TEST(test_zerofloat1)
+{
+  char buffer[128];
+  const char *format = "|%f|%f|%f|";
+  double a = 23.00041;
+  double b = 0.000039;
+  double c = -7.00036;
+  int ac = ft_printf(format, a, b, c);
+  int ex = snprintf(buffer, sizeof buffer, format, a, b, c);
+  ck_assert_pstr_eq(get_write_buf(), buffer);
+  ck_assert_int_eq(ac, ex);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -3790,6 +3804,7 @@ Suite *ft_printf_suite(void)
   TCase *tc_nullo;
   TCase *tc_nullp;
   TCase *tc_osharp;
+  TCase *tc_zerofloat;
 
   s = suite_create("ft_printf");
   tc_single_format_param = tcase_create("Single format param");
@@ -4210,6 +4225,10 @@ Suite *ft_printf_suite(void)
   tc_osharp = tcase_create("osharp");
   tcase_add_checked_fixture(tc_osharp, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_osharp, test_osharp);
+
+  tc_zerofloat = tcase_create("zerofloat");
+  tcase_add_checked_fixture(tc_zerofloat, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_zerofloat, test_zerofloat1);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
@@ -4232,6 +4251,7 @@ Suite *ft_printf_suite(void)
   suite_add_tcase(s, tc_nullo);
   suite_add_tcase(s, tc_nullp);
   suite_add_tcase(s, tc_osharp);
+  suite_add_tcase(s, tc_zerofloat);
 
   return s;
 }
