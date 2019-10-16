@@ -2573,17 +2573,6 @@ START_TEST(test_space_lf)
 }
 END_TEST
 
-START_TEST(test_single_percent)
-{
-  char buffer[128];
-  const char *format = "[%";
-  int actual_result = ft_printf(format);
-  int expected_result = snprintf(buffer, sizeof buffer, format);
-  ck_assert_pstr_eq(get_write_buf(), buffer);
-  ck_assert_int_eq(actual_result, expected_result);
-}
-END_TEST
-
 START_TEST(test_space_Lf)
 {
   char buffer[128];
@@ -2729,7 +2718,7 @@ END_TEST
 START_TEST(test_multiflags_plus_space)
 {
   char buffer[128];
-  const char *format = "% + 15.5d % +.4i % +-  20.10u %-10+o %+-+ 10.5x %+ +5.10X";
+  const char *format = "% + 15.5d % +.4i % +-  20.10u %-+10o %+-+ 10.5x %+ +5.10X";
   int a = 123;
   int b = -789;
   unsigned c = 45;
@@ -3882,6 +3871,28 @@ START_TEST(test_zerofloat8)
 }
 END_TEST
 
+START_TEST(test_single_percent)
+{
+  char buffer[128];
+  const char *format = "[%";
+  int actual_result = ft_printf(format);
+  int expected_result = 1;
+  ck_assert_pstr_eq(get_write_buf(), "[");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
+START_TEST(test_triple_percent)
+{
+  char buffer[128];
+  const char *format = "[%%%";
+  int actual_result = ft_printf(format);
+  int expected_result = 2;
+  ck_assert_pstr_eq(get_write_buf(), "[%");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4196,16 +4207,6 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_space, test_space_equal_width);
   tcase_add_test(tc_space, test_space_minus_equal_width);
 
-  tc_error_type = tcase_create("Error type");
-  tcase_add_checked_fixture(tc_error_type, setup_ft_printf, teardown_ft_printf);
-  tcase_add_test(tc_error_type, test_single_percent);
-  tcase_add_test(tc_error_type, test_omit_type);
-  tcase_add_test(tc_error_type, test_width_omit_type);
-  tcase_add_test(tc_error_type, test_full_unknown_type);
-  tcase_add_test(tc_error_type, test_multi_unknown_type);
-  tcase_add_test(tc_error_type, test_multi_omit_type);
-  tcase_add_test(tc_error_type, test_multi_single_percent);
-
   tc_multiflags = tcase_create("Multi flags");
   tcase_add_checked_fixture(tc_multiflags, setup_ft_printf, teardown_ft_printf);
   tcase_add_test(tc_multiflags, test_multiflags_zero_precision);
@@ -4338,6 +4339,11 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_zerofloat, test_zerofloat6);
   tcase_add_test(tc_zerofloat, test_zerofloat7);
   tcase_add_test(tc_zerofloat, test_zerofloat8);
+
+  tc_error_type = tcase_create("Error type");
+  tcase_add_checked_fixture(tc_error_type, setup_ft_printf, teardown_ft_printf);
+  tcase_add_test(tc_error_type, test_single_percent);
+  tcase_add_test(tc_error_type, test_triple_percent);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);

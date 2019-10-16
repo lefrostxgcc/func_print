@@ -49,7 +49,7 @@ int rz_ftoa(char *res, t_rz_arg *info, long double arg);
 void rz_buf_flush(t_rz_buf *buf);
 void rz_buf_fill(t_rz_buf *buf, char ch, int count);
 void rz_buf_add(t_rz_buf *buf, const char *s, int len);
-void rz_parse_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt);
+void rz_parse_fmt(t_rz_arg *f, const char **fmt);
 int rz_read_integer_number(const char **s);
 t_rz_cast_type rz_select_cast(const t_rz_arg *f);
 void rz_print_long(t_rz_buf *buf, t_rz_arg *f, long arg);
