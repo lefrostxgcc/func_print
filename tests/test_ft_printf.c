@@ -3904,6 +3904,17 @@ START_TEST(test_prefix_percent)
 }
 END_TEST
 
+START_TEST(test_prefix_suffix_percent)
+{
+  char buffer[128];
+  const char *format = "hello % www";
+  int actual_result = ft_printf(format);
+  int expected_result = 9;
+  ck_assert_pstr_eq(get_write_buf(), "hello www");
+  ck_assert_int_eq(actual_result, expected_result);
+}
+END_TEST
+
 Suite *ft_printf_suite(void)
 {
   Suite *s;
@@ -4356,6 +4367,7 @@ Suite *ft_printf_suite(void)
   tcase_add_test(tc_error_type, test_single_percent);
   tcase_add_test(tc_error_type, test_triple_percent);
   tcase_add_test(tc_error_type, test_prefix_percent);
+  tcase_add_test(tc_error_type, test_prefix_suffix_percent);
   
   suite_add_tcase(s, tc_single_format_param);
   suite_add_tcase(s, tc_single_param);
