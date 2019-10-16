@@ -1,6 +1,6 @@
 #include "rz_printf.h"
 
-void rz_print_as_p(t_rz_buf *buf, t_rz_arg *f, void *p)
+void rz_print_pointer(t_rz_buf *buf, t_rz_arg *f, void *p)
 {
     char str_rep[21];
     const char *s;
@@ -26,7 +26,7 @@ void rz_print_as_p(t_rz_buf *buf, t_rz_arg *f, void *p)
     rz_print_type(buf, f, s);
 }
 
-void rz_print_as_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
+void rz_print_cstring(t_rz_buf *buf, t_rz_arg *f, const char *s)
 {
     if (s == NULL)
     {
@@ -35,4 +35,20 @@ void rz_print_as_s(t_rz_buf *buf, t_rz_arg *f, const char *s)
     }
     f->slen = rz_strlen(s);
     rz_print_type(buf, f, s);
+}
+
+void rz_print_fmt(t_rz_buf *buf, t_rz_arg *f, const char **fmt)
+{
+    const char *p;
+
+    if (f->cast == cast_percent)
+	rz_buf_add(buf, "%", 1);
+    else
+    {
+	p = *fmt;
+	while (*p && *p != '%')
+	    p++;
+	rz_buf_add(buf, *fmt, p - *fmt);
+	*fmt = p;
+    }
 }

@@ -1,6 +1,6 @@
 #include "rz_printf.h"
 
-void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long a)
+void rz_print_long(t_rz_buf *buf, t_rz_arg *f, long a)
 {
     char str_rep[21];
   
@@ -13,7 +13,7 @@ void rz_print_as_long(t_rz_buf *buf, t_rz_arg *f, long a)
     rz_print_type(buf, f, str_rep);
 }
 
-void rz_print_as_ldouble(t_rz_buf *buf, t_rz_arg *f, long double a)
+void rz_print_ldouble(t_rz_buf *buf, t_rz_arg *f, long double a)
 {
     char str_rep[42];
 
@@ -28,7 +28,7 @@ void rz_print_as_ldouble(t_rz_buf *buf, t_rz_arg *f, long double a)
     rz_print_type(buf, f, str_rep);
 }
 
-void rz_print_as_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
+void rz_print_ulong(t_rz_buf *buf, t_rz_arg *f, unsigned long a)
 {
     char str_rep[21];
     const char *s;
