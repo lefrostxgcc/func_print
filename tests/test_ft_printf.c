@@ -3730,10 +3730,10 @@ END_TEST
 
 START_TEST(test_nullp)
 {
-  const char *format = "|%p|%5p|%.p|";
-  int ac = ft_printf(format, NULL, NULL, NULL);
-  ck_assert_pstr_eq(get_write_buf(), "|0x0|  0x0|0x|");
-  ck_assert_int_eq(ac, 14);
+  const char *format = "|%p|%5p|%.p|%.5p|";
+  int ac = ft_printf(format, NULL, NULL, NULL, NULL);
+  ck_assert_pstr_eq(get_write_buf(), "|0x0|  0x0|0x|0x00000|");
+  ck_assert_int_eq(ac, 22);
 }
 END_TEST
 
