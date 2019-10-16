@@ -11,9 +11,9 @@ FILES := ft_printf.c \
         rz_cast.c    \
 	rz_utility.c \
         rz_print_number.c \
-        rz_print_csu.c \
-        rz_print_dif.c \
-	rz_print_oxp.c \
+        rz_print_type_csu.c \
+        rz_print_type_dif.c \
+	rz_print_type_oxp.c \
 	rz_print_pointer.c \
 	rz_ft.c
 
