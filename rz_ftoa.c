@@ -2,7 +2,7 @@
 
 static unsigned long rz_modfl(long double n, int precision, long *i)
 {
-    unsigned long f;
+    unsigned long frac;
     unsigned long pre_pow;
     long double tn;
 
@@ -14,52 +14,58 @@ static unsigned long rz_modfl(long double n, int precision, long *i)
 	precision = 18;
     pre_pow = rz_pow(10, precision);
     n *= pre_pow;
-    f = n;
+    frac = n;
     tn = n - (unsigned long) n;
     tn *= 10;
     if (((unsigned long) tn) % 10 >= 5)
-	f++;
-    if (f >= pre_pow)
+	frac++;
+    if (frac >= pre_pow)
     {
 	*i += rz_tern_l(*i > 0, 1, -1);
-	f = 0;
+	frac = 0;
     }
-    return (f);
+    return (frac);
 }
 
-int rz_ftoa(char *buf, t_rz_arg *arg, long double n)
+static int rz_ftoa_frac(char *buf, t_rz_arg *f, unsigned long frac)
 {
     char frep[21];
-    long i;
-    unsigned long f;
-    int f_len;
+    int zero_prefix;
+    int zero_suffix;
+    int total_len;
+    int frac_len;
+    
+    zero_prefix = 0;
+    frep[0] = '\0';
+    frac_len = rz_ultoa(frep, f, frac);
+    total_len = frac_len;
+    if (f->precision > frac_len)
+    {
+	zero_prefix = f->precision - frac_len;
+	rz_memset(buf, '0', zero_prefix);
+	total_len += zero_prefix;
+    }
+    rz_memcpy(buf + zero_prefix, frep, frac_len);
+    zero_suffix = f->precision - frac_len - zero_prefix;
+    if (zero_suffix > 0)
+	f->floatzero = zero_suffix;
+    return (total_len);
+}
+
+int rz_ftoa(char *buf, t_rz_arg *f, long double n)
+{
+    long integer;
+    unsigned long frac;
     int buf_len;
-    int zero_count;
-    int zero_pre;
 
     if (n < 0)
-	arg->negative = 1;
-    f = rz_modfl(n, arg->precision, &i);
-    buf_len = rz_ltoa(buf, arg, i);
-    if (arg->precision > 0 || arg->sharp)
+	f->negative = 1;
+    frac = rz_modfl(n, f->precision, &integer);
+    buf_len = rz_ltoa(buf, f, integer);
+    if (f->precision > 0 || f->sharp)
 	buf[buf_len++] = '.';
-    if (arg->precision > 0)
-    {
-	zero_pre = 0;
-	frep[0] = '\0';
-	f_len = rz_ultoa(frep, arg, f);
-	if (arg->precision > f_len)
-	{
-	    zero_pre = arg->precision - f_len;
-	    rz_memset(buf + buf_len, '0', zero_pre);
-	    buf_len += zero_pre;
-	}
-	rz_memcpy(buf + buf_len, frep, f_len);
-	buf_len += f_len;
-	zero_count = arg->precision - f_len - zero_pre;
-	if (zero_count > 0)
-	    arg->floatzero = zero_count;
-    }
+    if (f->precision > 0)
+	buf_len += rz_ftoa_frac(buf + buf_len, f, frac);
     buf[buf_len] = '\0';
     return (buf_len);
 }
