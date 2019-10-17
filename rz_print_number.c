@@ -15,7 +15,7 @@ void rz_print_long(t_rz_buf *buf, t_rz_arg *f, long a)
 
 void rz_print_ldouble(t_rz_buf *buf, t_rz_arg *f, long double a)
 {
-    char str_rep[42];
+    char str_rep[64];
 
     if (f->precision < 0)
 	f->precision = 6;
