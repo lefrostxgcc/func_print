@@ -91,7 +91,6 @@ static int rz_ftoa_frac(char *buf, t_rz_arg *f, t_rz_frac *frac)
     }
     rz_memcpy(buf + zero_prefix, s, low_len);
     rz_memcpy(buf + zero_prefix + low_len, s + 21, high_len);
-    f->floatzero = f->precision - total_len;
     return (total_len);
 }
 

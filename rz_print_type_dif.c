@@ -55,8 +55,6 @@ void rz_print_type_f(t_rz_buf *buf, t_rz_arg *f, const char *s)
     if (ch != '0')
 	rz_print_sign_placeholder(buf, f);
     rz_buf_add(buf, s, f->slen);
-    if (f->floatzero > 0)
-	rz_buf_fill(buf, '0', f->floatzero);
     if (f->minus && padding > 0)
 	rz_buf_fill(buf, ' ', padding);
 }
