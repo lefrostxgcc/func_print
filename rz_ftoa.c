@@ -1,109 +1,114 @@
 #include "rz_printf.h"
 
-static long rz_ext(long double n, int p, unsigned long *l, unsigned long *h)
+static int rz_low_prec(long double n, t_rz_frac *frac, int prec)
 {
-    long i;
-    unsigned long pl_pow;
-    unsigned long ph_pow;
-    int tp;
-    long double tn;
-
-    i = n;
-    n -= i;
-    *h = 0;
-    if (n < 0)
-	n = -n;
-    tp = p;
-    if (p > 18)
-	p = 18;
-    pl_pow = rz_pow(10, p);
-    n *= pl_pow;
-    *l = n;
-    n -= *l;
-    if (tp > 18)
-    {
-	p = tp - 18;
-	if (p > 18)
-	    p = 18;
-	ph_pow = rz_pow(10, p);
-	n *= ph_pow;
-	*h = n;
-	tn = n - (unsigned long) n;
-	tn *= 10;
-	if (((unsigned long) tn) % 10 >= 5)
-	    (*h)++;
-	if (*h >= ph_pow)
-	{
-	    *h = 0;
-	    (*l)++;
-	    if (*l >= pl_pow)
-	    {
-		i += rz_tern_l(i > 0, 1, -1);
-		*l = 0;
-	    }
-	}
-    }
-    else
-    {
-	tn = n - (unsigned long) n;
-	tn *= 10;
-	if (((unsigned long) tn) % 10 >= 5)
-	    (*l)++;
-	if (*l >= pl_pow)
-	{
-	    i += rz_tern_l(i > 0, 1, -1);
-	    *l = 0;
-	    *h = 0;
-	}
-    }
-    return (i);
+    unsigned long low_pow;
+    
+    frac->high = 0;
+    low_pow = rz_pow(10, prec);
+    n *= low_pow;
+    frac->low = n;
+    n -= frac->low;
+    n *= 10;
+    if (((unsigned long) n) % 10 >= 5)
+	frac->low++;
+    if (frac->low >= low_pow)
+	return (1);
+    return (0);
 }
 
-static int rz_ftoa_f(char *buf, t_rz_arg *f, unsigned long l, unsigned long h)
+static int rz_high_prec(long double n, t_rz_frac *frac, int prec)
 {
-    char lrep[21];
-    char hrep[21];
+    unsigned long low_pow;
+    unsigned long high_pow;
+
+    if (prec > 36)
+	prec = 36;
+    low_pow = rz_pow(10, 18);
+    n *= low_pow;
+    frac->low = n;
+    n -= frac->low;
+    prec -= 18;
+    high_pow = rz_pow(10, prec);
+    n *= high_pow;
+    frac->high = n;
+    n *= 10;
+    if (((unsigned long) n) % 10 >= 5)
+	frac->high++;
+    if (frac->high >= high_pow)
+    {
+	frac->high = 0;
+	frac->low++;
+	if (frac->low >= low_pow)
+	    return (1);
+    }
+    return (0);
+}
+
+static long rz_modfl(long double n, t_rz_frac *frac, int prec)
+{
+    long integer;
+    int need_round_integer;
+
+    integer = (long) n;
+    n -= integer;
+    if (n < 0)
+	n = -n;
+    if (prec < 18)
+	need_round_integer = rz_low_prec(n, frac, prec);
+    else
+	need_round_integer = rz_high_prec(n, frac, prec);
+    if (need_round_integer)
+    {
+	integer += rz_tern_l(integer > 0, 1, -1);
+	frac->low = 0;
+	frac->high = 0;
+    }
+    return (integer);
+}
+
+static int rz_ftoa_frac(char *buf, t_rz_arg *f, t_rz_frac *frac)
+{
+    char s[42];
     int zero_prefix;
-    int zero_suffix;
     int total_len;
-    int l_len;
-    int h_len;
+    int low_len;
+    int high_len;
 
     zero_prefix = 0;
-    lrep[0] = '\0';
-    hrep[0] = '\0';
-    l_len = rz_ultoa(lrep, f, l);
-    h_len = h > 0 ? rz_ultoa(hrep, f, h) : 0;
-    total_len = l_len + h_len;
+    s[0] = '\0';
+    s[21] = '\0';
+    low_len = rz_ultoa(s, f, frac->low);
+    high_len = 0;
+    if (frac->high > 0)
+	high_len = rz_ultoa(s + 21, f, frac->high);
+    total_len = low_len + high_len;
     if (f->precision > total_len)
     {
 	zero_prefix = f->precision - total_len;
 	rz_memset(buf, '0', zero_prefix);
 	total_len += zero_prefix;
     }
-    rz_memcpy(buf + zero_prefix, lrep, l_len);
-    rz_memcpy(buf + zero_prefix + l_len, hrep, h_len);
-    zero_suffix = f->precision - l_len - h_len - zero_prefix;
-    if (zero_suffix > 0)
-	f->floatzero = zero_suffix;
+    rz_memcpy(buf + zero_prefix, s, low_len);
+    rz_memcpy(buf + zero_prefix + low_len, s + 21, high_len);
+    f->floatzero = f->precision - total_len;
     return (total_len);
 }
 
 int rz_ftoa(char *buf, t_rz_arg *f, long double n)
 {
+    t_rz_frac frac;
     long integer;
-    unsigned long l;
-    unsigned long h;
     int buf_len;
 
     if (n < 0)
 	f->negative = 1;
-    integer = rz_ext(n, f->precision, &l, &h);
+    integer = rz_modfl(n, &frac, f->precision);
     buf_len = rz_ltoa(buf, f, integer);
     if (f->precision > 0 || f->sharp)
 	buf[buf_len++] = '.';
     if (f->precision > 0)
-	buf_len += rz_ftoa_f(buf + buf_len, f, l, h);
+	buf_len += rz_ftoa_frac(buf + buf_len, f, &frac);
     buf[buf_len] = '\0';
     return (buf_len);
 }

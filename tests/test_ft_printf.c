@@ -2585,16 +2585,16 @@ START_TEST(test_space_equal_width)
 {
   char buffer[512];
   const char *format = "% 5.5d % 3.3i % 4.4u % 5.5o % 3.3x % 3.3X"
-      "% 7.4f % 7.4lf % 2.4c % 5.5s";
+    "% 7.4f % 7.4lf % 2.4c % 5.5s";
   int a = 12;
   int a2 = -1;
   double b = 1.46;
   char c = 'q';
   const char *s = "Hello World!";
   int actual_result =
-      ft_printf(format, a, a2, a, a, a, a, b, b, c, s);
+    ft_printf(format, a, a2, a, a, a, a, b, b, c, s);
   int expected_result =
-      snprintf(buffer, sizeof buffer, format, a, a2, a, a, a, a, b, b, c, s);
+    snprintf(buffer, sizeof buffer, format, a, a2, a, a, a, a, b, b, c, s);
   ck_assert_pstr_eq(get_write_buf(), buffer);
   ck_assert_int_eq(actual_result, expected_result);
 }
@@ -2604,16 +2604,16 @@ START_TEST(test_space_minus_equal_width)
 {
   char buffer[512];
   const char *format = "%- 5.5d %- 3.3i % -4.4u %- 5.5o %-- 3.3x %- 3.3X"
-      "%- 7.4f % -7.4lf %- 2.4c % -5.5s";
+    "%- 7.4f % -7.4lf %- 2.4c % -5.5s";
   int a = 12;
   int a2 = -1;
   double b = 1.46;
   char c = 'q';
   const char *s = "Hello World!";
   int actual_result =
-      ft_printf(format, a, a2, a, a, a, a, b, b, c, s);
+    ft_printf(format, a, a2, a, a, a, a, b, b, c, s);
   int expected_result =
-      snprintf(buffer, sizeof buffer, format, a, a2, a, a, a, a, b, b, c, s);
+    snprintf(buffer, sizeof buffer, format, a, a2, a, a, a, a, b, b, c, s);
   ck_assert_pstr_eq(get_write_buf(), buffer);
   ck_assert_int_eq(actual_result, expected_result);
 }

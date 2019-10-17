@@ -40,8 +40,15 @@ struct s_rz_arg
     int fmtlen;
 };
 
+struct s_rz_frac
+{
+    unsigned long low;
+    unsigned long high;
+};
+
 typedef struct s_rz_buf t_rz_buf;
 typedef struct s_rz_arg t_rz_arg;
+typedef struct s_rz_frac t_rz_frac;
 
 int rz_ltoa(char *res, t_rz_arg *f, long number);
 int rz_ultoa(char *res, t_rz_arg *f, unsigned long number);
