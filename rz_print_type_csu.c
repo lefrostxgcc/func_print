@@ -37,10 +37,16 @@ void rz_print_type_u(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int width;
     int padding;
 
-    ch = rz_tern_l(!f->minus && f->zero && f->precision < 0, '0', ' ');
-    width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
+    if (!f->minus && f->zero && f->precision < 0)
+	ch = '0';
+    else
+	ch = ' ';
+    if (f->precision > f->slen)
+	width = f->precision;
+    else
+	width = f->slen;
     if (f->argzero && f->precision == 0 && f->width > 0)
-      width--;
+	width--;
     padding = f->width - width;
     if (!f->minus && padding > 0)
 	rz_buf_fill(buf, ch, padding);
@@ -58,7 +64,10 @@ void rz_print_percent(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int spaces;
     char ch;
 
-    ch = rz_tern_l(!f->minus && f->zero, '0', ' ');
+    if (!f->minus && f->zero)
+	ch = '0';
+    else
+	ch = ' ';
     width = f->slen;
     spaces = f->width - width;
     if (!f->minus && spaces > 0)

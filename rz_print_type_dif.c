@@ -43,8 +43,14 @@ void rz_print_type_f(t_rz_buf *buf, t_rz_arg *f, const char *s)
     int width;
     int padding;
 
-    ch = rz_tern_l(!f->minus && f->zero && f->precision < 0, '0', ' ');
-    width = rz_tern_l(f->precision > f->slen, f->precision, f->slen);
+    if (!f->minus && f->zero && f->precision < 0)
+	ch = '0';
+    else
+	ch = ' ';
+    if (f->precision > f->slen)
+	width = f->precision;
+    else
+	width = f->slen;
     if (f->negative || f->plus || f->space)
 	width++;
     padding = f->width - width;
